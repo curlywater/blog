@@ -6,7 +6,7 @@ const front2EndSidebar = [
   },
   {
     title: "App Ideas编程挑战",
-    path: "/前端技术/App-ideas/",
+    path: "/f2e/app-ideas/",
     children: ["/前端技术/App-ideas/Bin2Dec/"],
   },
 ];
@@ -28,10 +28,10 @@ module.exports = {
   },
   themeConfig: {
     nav: [
-      { text: "前端技术", link: "/前端技术/" },
+      { text: "前端技术", link: "/f2e/" },
       {
         text: "算法",
-        link: "/算法/",
+        link: "/algo/",
       },
       { text: "Github", link: "https://github.com/curlywater" },
     ],

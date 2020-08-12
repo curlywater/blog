@@ -1,5 +1,6 @@
 ---
 title: App Ideas
+permalink: /f2e/app-ideas
 ---
 # App Ideas 编程挑战
 
@@ -9,4 +10,4 @@ title: App Ideas
 
 ## 初级项目
 
-- [Bin2Dec](./bin2dec): Binary-to-Decimal number converter
+- [Bin2Dec](/f2e/app-ideas/bin2dec/): Binary-to-Decimal number converter

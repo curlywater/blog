@@ -2,7 +2,7 @@
 home: true
 heroImage: /hero.jpg
 actionText: 开始阅读 →
-actionLink: /前端技术/
+actionLink: /f2e/
 features:
   - title: 前端技术
     details: 基础梳理、主流技术研究、开源项目分析、编程挑战。

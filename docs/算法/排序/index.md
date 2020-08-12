@@ -1,5 +1,6 @@
 ---
 title: 排序
+permalink: /algo/sort
 ---
 
 ## 前导说明

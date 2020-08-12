@@ -1,3 +1,6 @@
+---
+permalink: /f2e/app-ideas/bin2dec
+---
 # Bin2Dec
 
 **Tier:** 1-Beginner

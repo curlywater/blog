@@ -1,5 +1,6 @@
 ---
 title: React知识体系
+permalink: /f2e/react/react-document
 ---
 
 # React 知识体系
