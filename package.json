@@ -1,0 +1,22 @@
+{
+  "name": "blog",
+  "version": "1.0.0",
+  "description": "Curly's Blog",
+  "main": "index.js",
+  "author": "Curly",
+  "license": "MIT",
+  "devDependencies": {
+    "@vuepress/plugin-back-to-top": "^1.5.3",
+    "@vuepress/plugin-pwa": "^1.5.3",
+    "vuepress": "^1.5.2",
+    "vuepress-plugin-flowchart": "^1.4.3",
+    "vuepress-plugin-mathjax": "^1.2.8"
+  },
+  "scripts": {
+    "docs:dev": "vuepress dev docs",
+    "docs:build": "vuepress build docs"
+  },
+  "dependencies": {
+    "markdown-it-task-lists": "^2.1.1"
+  }
+}
