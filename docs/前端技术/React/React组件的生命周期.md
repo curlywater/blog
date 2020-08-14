@@ -36,15 +36,15 @@ permalink: /f2e/react/react-component-lifecycle
 
 作用：初始化`this.state`，为事件处理函数绑定实例，初始化实例属性
 
-```JavaScript
+```js
 import React from "react";
 
 export default class Count extends React.Component {
-	constructor (props) {
+  constructor(props) {
     super(props);
     this.timer = null;
     this.state = {
-      count: 0
+      count: 0,
     };
     this.handleCountTimer = this.handleCountTimer.bind(this);
   }
@@ -67,7 +67,7 @@ export default class Count extends React.Component {
 
 ### getDerivedStateFromProps
 
-```JavaScript
+```js
 static getDerivedStateFromProps(props, state)
 ```
 
@@ -135,7 +135,7 @@ render 是一个纯函数，根据现有数据返回以下类型：
 
 作用：使得组件能在发生更改之前从 DOM 中捕获一些信息（例如，滚动位置）。此生命周期的任何返回值将作为参数传递给 `componentDidUpdate()`。
 
-```JavaScript
+```js
 class ScrollingList extends React.Component {
   constructor(props) {
     super(props);
@@ -163,9 +163,7 @@ class ScrollingList extends React.Component {
   }
 
   render() {
-    return (
-      <div ref={this.listRef}>{/* ...contents... */}</div>
-    );
+    return <div ref={this.listRef}>{/* ...contents... */}</div>;
   }
 }
 ```
@@ -178,8 +176,8 @@ class ScrollingList extends React.Component {
 
 ### componentDidUpdate
 
-```JavaScript
-componentDidUpdate(prevProps, prevState, snapshot)
+```js
+componentDidUpdate(prevProps, prevState, snapshot);
 ```
 
 时机：组件更新后调用

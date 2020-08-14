@@ -76,5 +76,19 @@ module.exports = {
         after: () => "</details>\n",
       },
     ],
+    [
+      "@vuepress/last-updated",
+      {
+        transformer: (timestamp) => {
+          const updateTime = new Date(timestamp);
+          const year = updateTime.getFullYear();
+          const month = updateTime.getMonth() + 1;
+          const date = updateTime.getDate();
+          const hours = `${updateTime.getHours()}`.padStart(2, "0");
+          const minutes = `${updateTime.getMinutes()}`.padStart(2, "0");
+          return `${year}年${month}月${date}日 ${hours}:${minutes}`;
+        },
+      },
+    ],
   ],
 };

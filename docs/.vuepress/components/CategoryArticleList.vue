@@ -68,7 +68,6 @@ export default {
     formatArticleData(article) {
       const { type, relativePath, categoryTitle } = article;
       if (type === "Article") {
-        console.log(this.pageMap);
         const base = relativePath.slice(1);
         const pageData =
           path.extname(base) === ".md"

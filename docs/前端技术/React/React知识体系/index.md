@@ -52,17 +52,17 @@ window.onload = function() {
 
 React 结合 JSX 的实现：
 
-```JavaScript
+```js
 class Count extends React.Component {
   constructor(props) {
-    super(props)
-    this.state = { count: 0 }
-    this.addCount = this.addCount.bind(this)
+    super(props);
+    this.state = { count: 0 };
+    this.addCount = this.addCount.bind(this);
   }
   addCount() {
-    this.setState(state => ({
+    this.setState((state) => ({
       count: state.count + 1,
-    }))
+    }));
   }
   render() {
     return (
@@ -70,12 +70,11 @@ class Count extends React.Component {
         <button onClick={this.addCount}>add</button>
         <p>{this.state.count}</p>
       </div>
-    )
+    );
   }
 }
 
-ReactDOM.render(<Count />, document.getElementById("app"))
-
+ReactDOM.render(<Count />, document.getElementById("app"));
 ```
 
 解决了两大痛点：
@@ -105,7 +104,7 @@ render() {
 
 React 语法
 
-```JavaScript
+```js
 render() {
   return React.createElement(
     "div",
@@ -154,7 +153,7 @@ render() {
 
 2. 如果已经有一个 props 对象，可以使用扩展运算符传递整个属性对象
 
-   ```JavaScript
+   ```js
    <Welcome {...props} />
    ```
 
@@ -164,8 +163,8 @@ render() {
 
 React 模块负责 React 核心部分，ReactDOM 模块负责将 React 元素的状态同步到 DOM 上。
 
-```JavaScript
-ReactDOM.render(element, document.getElementById('root'));
+```js
+ReactDOM.render(element, document.getElementById("root"));
 ```
 
 **React 元素是不可变对象**
@@ -211,19 +210,19 @@ ReactDOM.render(element, document.getElementById('root'));
 
 当更新需要依赖`this.state`时，可能会得到意想不到的结果。
 
-```JavaScript
+```js
 function incrementMultiple() {
-  this.setState({count: this.state.count + 1});
-  this.setState({count: this.state.count + 1});
-  this.setState({count: this.state.count + 1});
+  this.setState({ count: this.state.count + 1 });
+  this.setState({ count: this.state.count + 1 });
+  this.setState({ count: this.state.count + 1 });
 }
 ```
 
 函数式`setState`可以解决这个问题
 
-```JavaScript
+```js
 function increment(state) {
-  return {count: state.count + 1};
+  return { count: state.count + 1 };
 }
 function incrementMultiple() {
   this.setState(increment);
@@ -238,7 +237,7 @@ function incrementMultiple() {
 
 每个组件都包含生命周期方法，在特定阶段执行这些方法。
 
-篇幅略长，单独提出一篇文章[React组件的生命周期](/f2e/react/react-component/lifecycle/)。
+篇幅略长，单独提出一篇文章[React 组件的生命周期](/f2e/react/react-component/lifecycle/)。
 
 ### 类组件和函数组件
 
@@ -248,7 +247,7 @@ function incrementMultiple() {
 
 默认无状态，无生命周期接口供开发者调用。但是可以结合 hook 使用，从而拥有状态和生命周期调用接口。
 
-```JavaScript
+```js
 function Welcome(props) {
   return <h1>Hello, {props.name}</h1>;
 }
@@ -256,7 +255,7 @@ function Welcome(props) {
 
 **类组件**
 
-```JavaScript
+```js
 class Welcome extends React.Component {
   render() {
     return <h1>Hello, {this.props.name}</h1>;
@@ -272,7 +271,7 @@ class Welcome extends React.Component {
 
 组件被父级传入的 props 控制。常见的表单组件`input`/`textarea`等原生带有输入显示功能，可视为一个子组件。下述代码体现了自定义组件控制`input`输入显示的情况：
 
-```JavaScript
+```js
 <input type="text" value={this.state.value} onChange={this.handleChange} />
 ```
 
@@ -280,7 +279,7 @@ class Welcome extends React.Component {
 
 组件的状态由自身 state 决定，不受 props 影响。
 
-```JavaScript
+```js
 class NameForm extends React.Component {
   constructor(props) {
     super(props);
@@ -289,7 +288,7 @@ class NameForm extends React.Component {
   }
 
   handleSubmit(event) {
-    alert('A name was submitted: ' + this.input.current.value);
+    alert("A name was submitted: " + this.input.current.value);
     event.preventDefault();
   }
 
@@ -305,7 +304,6 @@ class NameForm extends React.Component {
     );
   }
 }
-
 ```
 
 ## 事件处理
@@ -316,9 +314,9 @@ class NameForm extends React.Component {
 
 1. 在`constructor`中初始化实例方法
 
-   ```JavaScript
+   ```js
    class Welcome extends React.Component {
-   	constructor(props) {
+     constructor(props) {
        super(props);
        this.handleClick = this.handleClick.bind(this);
      }
@@ -327,18 +325,18 @@ class NameForm extends React.Component {
 
 2. 实例方法
 
-   ```JavaScript
+   ```js
    class Welcome extends React.Component {
-   	handleClick = () => {}
+     handleClick = () => {};
    }
    ```
 
 3. 内联箭头函数
 
-   ```JavaScript
+   ```js
    class Welcome extends React.Component {
-   	render () {
-       return <button onClick={e => this.setState({text: "Bye"})}></button>
+     render() {
+       return <button onClick={(e) => this.setState({ text: "Bye" })}></button>;
      }
    }
    ```
