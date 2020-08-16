@@ -38,10 +38,11 @@ constraints:
 
 ## Solution
 
-<iframe src="https://codesandbox.io/embed/happy-hodgkin-6yndr?fontsize=14&hidenavigation=1&theme=dark&view=preview"
+<iframe src="https://codesandbox.io/embed/happy-hodgkin-6yndr?fontsize=14&hidenavigation=1&initialpath=%2FBin2Dec&module=%2Fsrc%2Fprojects%2FBin2Dec%2Findex.js&theme=dark&view=preview"
      style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;"
      title="happy-hodgkin-6yndr"
      allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
      sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
    ></iframe>
+
 

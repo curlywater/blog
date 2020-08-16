@@ -3,6 +3,13 @@ const md = require("markdown-it")();
 const front2EndSidebar = [
   "/前端技术/",
   {
+    title: "CSS系列",
+    children: [
+      "/前端技术/CSS/styled-components使用指南.md",
+      "/前端技术/CSS/Emotion使用指南.md",
+    ],
+  },
+  {
     title: "React系列",
     children: [
       "/前端技术/React/React知识体系/",
@@ -50,6 +57,9 @@ module.exports = {
       "/前端技术/": front2EndSidebar,
       "/算法/": algorithmSidebar,
     },
+  },
+  markdown: {
+    lineNumbers: true,
   },
   extendMarkdown: (md) => {
     // 使用更多的 markdown-it 插件!

@@ -196,7 +196,7 @@ module.exports = {
 
 ### 动态生成分类文章列表
 
-依赖全局计算属性`$themeConfig.sidebar`/`$page`/`$pages`构建一个 CategoryArticleList 组件。在 Markdown 文件中使用 Vue 组件。手写解析或者利用`@theme/util`生成 Sidebar 数据的方法，后者一致性更高一些。
+依赖全局计算属性`$themeConfig.sidebar`/`$page`/`$pages`构建一个 [CategoryArticleList 组件](https://github.com/curlywater/blog/blob/master/docs/.vuepress/components/CategoryArticleList.vue)。在 Markdown 文件中使用 Vue 组件。手写解析或者利用`@theme/util`生成 Sidebar 数据的方法，后者一致性更高一些。
 
 ### Markdown 支持 Mathjax
 
