@@ -1,7 +1,7 @@
 ---
 title: font-family字体组合
 tags: [CSS基础]
-permalink: /f2e/css/font-family
+permalink: /f2e/css/css-basic/font-family
 ---
 
 # font-family 字体组合

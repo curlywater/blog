@@ -3,23 +3,42 @@ const md = require("markdown-it")();
 const front2EndSidebar = [
   "/前端技术/",
   {
-    title: "CSS系列",
+    title: "JavaScript",
+    children: ["/前端技术/JavaScript/Chrome基本工作原理/", "/前端技术/JavaScript/《浏览器工作原理与实践》学习笔记.md"],
+  },
+  {
+    title: "CSS",
     children: [
+      {
+        title: "CSS查阅手册",
+        path: "/f2e/css/css-basic/",
+        children: [
+          "/前端技术/CSS/CSS查阅手册/border-radius/",
+          "/前端技术/CSS/CSS查阅手册/font-family字体组合.md",
+        ],
+      },
       "/前端技术/CSS/styled-components使用指南.md",
       "/前端技术/CSS/Emotion使用指南.md",
     ],
   },
   {
-    title: "React系列",
+    title: "React",
     children: [
       "/前端技术/React/React知识体系/",
       "/前端技术/React/React组件的生命周期.md",
     ],
   },
   {
+    title: "TypeScript",
+    children: ["/前端技术/TypeScript/在VSCode中使用TypeScript.md"],
+  },
+  {
     title: "App Ideas编程挑战",
     path: "/f2e/app-ideas/",
-    children: ["/前端技术/App-ideas/Bin2Dec/"],
+    children: [
+      "/前端技术/App-ideas/Bin2Dec/",
+      "/前端技术/App-ideas/Border-radius Previewer.md",
+    ],
   },
   {
     title: "项目记录",

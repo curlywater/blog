@@ -216,7 +216,7 @@ module.exports = {
 };
 ```
 
-https://vuepress.github.io/zh/plugins/mathjax
+[https://vuepress.github.io/zh/plugins/mathjax](https://vuepress.github.io/zh/plugins/mathjax)
 
 ### Markdown 支持 TaskList
 
@@ -250,7 +250,7 @@ input.task-list-item-checkbox {
 
 ### 可跟进优化的
 
-需要一个编辑器，目前上写作中遇到的问题：
+需要一个编辑器，目前写作中遇到的问题：
 
 - 增加文章后需要手动设置`config.js`
 - 书写和预览不一致
