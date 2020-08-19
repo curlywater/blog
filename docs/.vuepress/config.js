@@ -49,6 +49,7 @@ const front2EndSidebar = [
 const algorithmSidebar = ["/算法/", "/算法/排序/"];
 
 module.exports = {
+  base: "/blog/",
   title: "Curly的Blog",
   description: "记录探索历程",
   head: [["link", { rel: "icon", href: "/favicon.png" }]],
