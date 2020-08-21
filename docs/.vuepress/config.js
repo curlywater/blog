@@ -86,6 +86,7 @@ module.exports = {
     md.use(require("markdown-it-task-lists"));
   },
   plugins: [
+    ["@vuepress/medium-zoom"],
     [
       "mathjax",
       {

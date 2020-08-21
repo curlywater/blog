@@ -6,6 +6,7 @@
   "author": "Curly",
   "license": "MIT",
   "devDependencies": {
+    "@vuepress/plugin-medium-zoom": "^1.5.3",
     "vuepress": "^1.5.2",
     "vuepress-plugin-flowchart": "^1.4.3",
     "vuepress-plugin-mathjax": "^1.2.8"
