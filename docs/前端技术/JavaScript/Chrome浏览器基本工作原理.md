@@ -1,9 +1,11 @@
 ---
-title: Chrome基本工作原理
+title: Chrome浏览器基本工作原理
 permalink: /f2e/base/chrome-browser-inside
 ---
 
 # Chrome基本工作原理
+
+简单概述Chrome浏览器基本工作原理，是阅读[Inside look at modern web browser](https://developers.google.com/web/updates/2018/09/inside-browser-part1)系列翻译文章后的知识点梳理。
 
 ## 浏览器体系架构
 
@@ -24,6 +26,8 @@ Chrome 浏览器中给每一个 Tab 页都分配一个渲染进程。
 
 在浏览器中键入 URL 到最终呈现页面，经过导航和渲染两个过程。
 
+### 导航过程
+
 导航过程由浏览器进程主导。
 浏览器进程里又把工作划分给不同线程处理：
 
@@ -38,6 +42,8 @@ Chrome 浏览器中给每一个 Tab 页都分配一个渲染进程。
 3. 读取响应：网络线程获取内容后根据 Content-Type 和 MIME 确定下一步要进行的操作，同时进行 Safe-Browsing 检查。
 4. 查找渲染进程：网络线程确定内容可被浏览器处理后，告知 UI 线程数据已准备就绪；UI 线程查找并启动一个渲染进程。
 5. 确认导航：数据已就绪、渲染进程启动完毕，浏览器进程发送 IPC 消息给渲染进程确认导航，渲染进程准备开始渲染，同时浏览器地址栏更新站点信息
+
+### 渲染过程
 
 渲染过程由渲染进程主导。
 
@@ -95,3 +101,9 @@ Chrome 浏览器中给每一个 Tab 页都分配一个渲染进程。
 
 [[译] 现代浏览器内部揭秘（第四部分）
 ](https://juejin.im/post/6844903695600058375)
+
+## 后记
+
+若有意向进一步了解浏览器工作原理，推荐[极客时间《浏览器工作原理与实践》专栏](https://time.geekbang.org/column/article/113399)。
+
+个人学习笔记在[《浏览器工作原理与实践》学习笔记](/f2e/base/inside-browser)一文，可做概览参考。
