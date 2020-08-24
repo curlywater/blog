@@ -79,7 +79,7 @@ export default {
           return {
             type,
             url: pagePath,
-            title: categoryTitle ? `【${categoryTitle}】 ${title}` : title
+            title: categoryTitle ? `【${categoryTitle}】📃 ${title}` : title
           };
         }
       } else {

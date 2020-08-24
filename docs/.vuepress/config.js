@@ -4,7 +4,16 @@ const front2EndSidebar = [
   "/前端技术/",
   {
     title: "JavaScript",
-    children: ["/前端技术/JavaScript/Chrome基本工作原理/", "/前端技术/JavaScript/《浏览器工作原理与实践》学习笔记.md"],
+    children: [
+      "/前端技术/JavaScript/Chrome基本工作原理/",
+      {
+        title: "JavaScript.info 学习笔记",
+        children: [
+          "/前端技术/JavaScript/JavaScript.info 学习笔记/JavaScript 编程语言.md",
+        ],
+      },
+      "/前端技术/JavaScript/《浏览器工作原理与实践》学习笔记.md",
+    ],
   },
   {
     title: "CSS",
