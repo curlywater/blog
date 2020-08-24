@@ -2,6 +2,7 @@
 title: JavaScript 编程语言
 permalink: /f2e/base/javascript-info-language
 sidebar: auto
+tags: [JavaScript基础]
 ---
 
 [《JavaScript.info》](https://javascript.info/) JavaScript 编程语言部分的学习笔记。

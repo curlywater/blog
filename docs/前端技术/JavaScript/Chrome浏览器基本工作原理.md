@@ -1,6 +1,7 @@
 ---
 title: Chrome浏览器基本工作原理
 permalink: /f2e/base/chrome-browser-inside
+tags: [Chrome, 浏览器原理]
 ---
 
 # Chrome基本工作原理
