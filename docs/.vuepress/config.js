@@ -12,7 +12,7 @@ const front2EndSidebar = [
         children: [
           "/前端技术/JavaScript/JavaScript.info 学习笔记/JavaScript 编程语言.md",
         ],
-      }
+      },
     ],
   },
   {
@@ -35,24 +35,31 @@ const front2EndSidebar = [
     children: [
       "/前端技术/React/React知识体系/",
       "/前端技术/React/React组件的生命周期.md",
-      "/前端技术/React/少量组件应用方案.md"
+      "/前端技术/React/少量组件应用方案.md",
     ],
   },
   {
     title: "TypeScript",
     children: ["/前端技术/TypeScript/在VSCode中使用TypeScript.md"],
   },
+
   {
-    title: "App Ideas编程挑战",
-    path: "/f2e/app-ideas/",
-    children: [
-      "/前端技术/App-ideas/Bin2Dec/",
-      "/前端技术/App-ideas/Border-radius Previewer.md",
-    ],
+    title: "源码解读",
+    children: ["/前端技术/源码解读/探索Typography.js.md"],
   },
   {
     title: "项目记录",
-    children: ["/前端技术/项目记录/个人博客搭建/"],
+    children: [
+      "/前端技术/项目记录/个人博客搭建/",
+      {
+        title: "App Ideas编程挑战",
+        path: "/f2e/app-ideas/",
+        children: [
+          "/前端技术/项目记录/App-ideas/Bin2Dec/",
+          "/前端技术/项目记录/App-ideas/Border-radius Previewer.md",
+        ],
+      },
+    ],
   },
 ];
 
