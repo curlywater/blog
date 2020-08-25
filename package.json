@@ -6,16 +6,26 @@
   "author": "Curly",
   "license": "MIT",
   "devDependencies": {
+    "@commitlint/cli": "^9.1.2",
+    "@commitlint/config-conventional": "^9.1.2",
     "@vuepress/plugin-medium-zoom": "^1.5.3",
+    "cz-conventional-changelog": "^3.2.1",
+    "cz-customizable": "^6.3.0",
     "vuepress": "^1.5.2",
     "vuepress-plugin-flowchart": "^1.4.3",
     "vuepress-plugin-mathjax": "^1.2.8"
   },
   "scripts": {
     "docs:dev": "vuepress dev docs",
-    "docs:build": "vuepress build docs"
+    "docs:build": "vuepress build docs",
+    "commit": "cz"
   },
   "dependencies": {
     "markdown-it-task-lists": "^2.1.1"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-customizable"
+    }
   }
 }
