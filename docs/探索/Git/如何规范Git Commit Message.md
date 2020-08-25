@@ -39,7 +39,8 @@ Commit Message 的规范格式
 - 和前一版本的区别
 
 **footer：脚注**
-- 备注Breaking  Changes信息；`BREAKING CHANGE: refactor to use JavaScript features not available in Node 6.`
+- 备注Breaking  Changes信息
+  `BREAKING CHANGE: refactor to use JavaScript features not available in Node 6.`
 - 备注[github issue关联操作](https://docs.github.com/en/github/managing-your-work-on-github/linking-a-pull-request-to-an-issue)
 
 
@@ -59,7 +60,7 @@ conventional commits 的规范内容大体上的Angular相差不大，附加说�
 - 只规定`feat`和`fix`两个类型，其他扩展类型可自定义
 - 内容区和脚注可选填
 - 多行主体内容使用空白行间隔开
-- 通过可选的`!`表明该提交中有Breaking Change，若存在`!`便可选择不使用`BREAKING CHANGE: `具体说明
+- 通过可选的`!`表明该提交中有Breaking Change，若存在`!`，便可选择不使用`BREAKING CHANGE: `进行具体说明
 
 可见[官方示例](https://www.conventionalcommits.org/en/v1.0.0/#examples)，直观了解。
 
@@ -69,24 +70,17 @@ conventional commits 的规范内容大体上的Angular相差不大，附加说�
 
 > A Node.js tool to create commit messages following the Conventional Commits specs.
 
-`commitizen/cz-cli` 是一个辅助依照 conventional commit 规范填写git commit 的工具。
+`commitizen/cz-cli` 是一个引导开发者依照 conventional commit 规范填写git commit 的工具。
 
 具体的表现是附加一个`git cz`命令，通过该命令进入commit message 填写引导。
 
 ### 安装方式
-
-**全局安装**
 
 ``` bash
 npm install -g commitizen
 ```
 在项目中使用`git cz`、`cz`、`git-cz`命令召唤引导程序。
 
-**局部安装**
-
-``` bash
-npx cz
-```
 
 ### 配置commit规范
 
@@ -123,7 +117,7 @@ commitizen init cz-customizable  --save-dev --save-exact
 
 在项目根目录下创建`.cz-config.js`文件，将[模版示例](https://raw.githubusercontent.com/leoforfree/cz-customizable/master/cz-config-EXAMPLE.js)内容拷贝到`.cz-config.js`中。
 
-`cz-customizable`配置文件的路径也可通过package.json文件的`config.cz-customizable`字段自定义。
+`cz-customizable`配置文件的路径也可通过package.json 文件的`config.cz-customizable`字段自定义。
 ``` json
 "config": {
   "commitizen": { // not needed for standlone usage
@@ -148,7 +142,7 @@ npm install --save-dev @commitlint/cli
 
 ### 配置
 
-在commitlint.config.js文件中配置commitlint 的校验规则，其中
+在commitlint.config.js 文件中配置commitlint 的校验规则，其中
 - `extends`，指定校验规则基于的规范，规范通过共享配置文件的形式定义，[可用的共享配置文件](https://github.com/conventional-changelog/commitlint#shared-configuration)
 - `rules`，在规范之上做一些自定义规则设定，[可配置字段列表](https://commitlint.js.org/#/reference-rules)
 
