@@ -42,7 +42,6 @@ const front2EndSidebar = [
     title: "TypeScript",
     children: ["/前端技术/TypeScript/在VSCode中使用TypeScript.md"],
   },
-
   {
     title: "源码解读",
     children: ["/前端技术/源码解读/探索Typography.js.md"],
@@ -64,6 +63,11 @@ const front2EndSidebar = [
 ];
 
 const algorithmSidebar = ["/算法/", "/算法/排序/"];
+
+const exploreSidebar = [{
+  title: "Git",
+  children: ["/探索/Git/如何规范Git Commit Message.md"]
+}]
 
 module.exports = {
   base: "/blog/",
@@ -87,12 +91,17 @@ module.exports = {
         text: "算法",
         link: "/algo/",
       },
+      {
+        text: "探索",
+        link: "/explore/"
+      },
       { text: "Github", link: "https://github.com/curlywater" },
     ],
     sidebarDepth: 2,
     sidebar: {
       "/前端技术/": front2EndSidebar,
       "/算法/": algorithmSidebar,
+      "/探索/": exploreSidebar
     },
   },
   markdown: {
