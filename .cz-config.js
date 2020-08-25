@@ -15,7 +15,7 @@ module.exports = {
       },
     ],
   
-    scopes: [{ name: 'accounts' }, { name: 'admin' }, { name: 'exampleScope' }, { name: 'changeMe' }],
+    scopes: [],
   
     allowTicketNumber: false,
     isTicketNumberRequired: false,
