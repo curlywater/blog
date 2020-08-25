@@ -19,6 +19,23 @@ const front2EndSidebar = [
     title: "CSS",
     children: [
       {
+        title: "CSS深入理解",
+        path: "/f2e/css/deep-think/",
+        children: [
+          "/前端技术/CSS/CSS深入理解/margin.md",
+          "/前端技术/CSS/CSS深入理解/border.md",
+          "/前端技术/CSS/CSS深入理解/padding.md",
+          "/前端技术/CSS/CSS深入理解/line-height.md",
+          "/前端技术/CSS/CSS深入理解/vertical-align.md",
+          "/前端技术/CSS/CSS深入理解/float.md",
+          "/前端技术/CSS/CSS深入理解/relative.md",
+          "/前端技术/CSS/CSS深入理解/absolute.md",
+          "/前端技术/CSS/CSS深入理解/z-index.md",
+          "/前端技术/CSS/CSS深入理解/overflow.md",
+          "/前端技术/CSS/CSS深入理解/flexbox.md",
+        ]
+      },
+      {
         title: "CSS查阅手册",
         path: "/f2e/css/css-basic/",
         children: [
