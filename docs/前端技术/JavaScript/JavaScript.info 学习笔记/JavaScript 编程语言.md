@@ -214,7 +214,7 @@ typeof(str); // "string"
 
   - 转换为**数字类型**再进行比较，例如`"1" > false`
 
-  - **特殊的情况：**在做相等比较时，`null`和`undefined`不会进行类型转换，因此
+  - 特殊的情况：在做相等比较时，`null`和`undefined`不会进行类型转换，因此
 
     ```javascript
     null == undefined // true
@@ -2047,7 +2047,7 @@ alert(filteredArr.isEmpty()); // Error: filteredArr.isEmpty is not a function
 
 `Class.isPrototypeOf(obj) === obj instanceof Class`
 
-###Object.prototype.toString()妙用
+### Object.prototype.toString()妙用
 
 `Object.prototype.toString`的算法会检查`this`
 
