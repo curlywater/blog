@@ -5,6 +5,7 @@ const front2EndSidebar = [
   {
     title: "JavaScript",
     children: [
+      "/前端技术/JavaScript/JavaScript变量与数据类型.md",
       "/前端技术/JavaScript/Chrome浏览器基本工作原理.md",
       "/前端技术/JavaScript/《浏览器工作原理与实践》学习笔记.md",
       {
