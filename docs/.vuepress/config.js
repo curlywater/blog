@@ -42,6 +42,7 @@ const front2EndSidebar = [
         children: [
           "/前端技术/CSS/CSS查阅手册/border-radius/",
           "/前端技术/CSS/CSS查阅手册/font-family字体组合.md",
+          "/前端技术/CSS/CSS查阅手册/flexbox.md"
         ],
       },
       "/前端技术/CSS/styled-components使用指南.md",

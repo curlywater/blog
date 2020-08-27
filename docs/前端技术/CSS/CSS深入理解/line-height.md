@@ -29,28 +29,28 @@ permalink: /f2e/css/deep-think/line-height
 
 行间距（vertical padding）= 行高 - 内容区域
 
-![line box](./images/line box-4372903.png)
+![line box](./images/line-box-4372903.png)
 
 行框高度是最高行内框到最低行内框的距离
 
 ## line-height属性值
 
-- normal: 和浏览器以及元素字体相关
-- 数值：1.5，根据当前元素的font-size计算
+- `normal`: 和浏览器以及元素字体相关
+- 数值：1.5，根据当前元素的`font-size`计算
 - 具体长度：1.5em, px, rem
 - 百分比：150%
-- inherit：input的默认行高为normal
+- inherit：`input`的默认行高为`normal`
 
 ### 1.5, 1.5em, 150%的差别
 
-- 1.5 - 继承line-height，元素根据自身的font-size计算
-- 1.5em, 150% - 设置line-height的元素计算好具体值再继承该值
+- 1.5 - 继承`line-height`，元素根据自身的`font-size`计算
+- 1.5em, 150% - 设置`line-height`的元素计算好具体值再继承该值
 
 ## line-height与图片
 
 隐匿文本节点产生一个不可见的行内框，图片默认对齐基线，导致图片并非贴紧容器底边
 
-line-height和height设置一致，并非是完全垂直，除非font-size为0
+`line-height`和`height`设置一致，并非是完全垂直，除非`font-size`为0
 
 <p class="codepen" data-height="265" data-theme-id="light" data-default-tab="css,result" data-user="curlywater" data-slug-hash="XoWPEg" style="height: 265px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; border: 2px solid; margin: 1em 0; padding: 1em;" data-pen-title="inline element">
   <span>See the Pen <a href="https://codepen.io/curlywater/pen/XoWPEg">

@@ -8,34 +8,34 @@ permalink: /f2e/css/deep-think/padding
 ## padding与容器的尺寸
 
 - block元素
-  - padding值过大，一定影响元素尺寸
-  - width为定值，padding会影响元素尺寸
-  - width为auto或者box-sizing为border-box，同时padding值没有暴走，不影响元素尺寸
-- inline元素：水平padding影响尺寸，垂直padding不影响尺寸，但是会影响占据空间（会显示背景色）
+  - `padding`值过大，一定影响元素尺寸
+  - `width`为定值，`padding`会影响元素尺寸
+  - `width`为auto或者`box-sizing`为`border-box`，同时`padding`值没有暴走，不影响元素尺寸
+- inline元素：水平`padding`影响尺寸，垂直`padding`不影响尺寸，但是会影响占据空间（会显示背景色）
 
 ## padding负值与百分比单位
 
-- padding不支持负值
-- padding百分比相对于自身宽度计算
-- inline元素的padding有断行效果
-- 空的inline元素padding高宽不相等，因为inline的垂直padding会让隐匿文本节点出现
+- `padding`不支持负值
+- `padding`百分比相对于自身宽度计算
+- inline元素的`padding`有断行效果
+- 空的inline元素`padding`高宽不相等，因为inline的垂直`padding`会让隐匿文本节点出现
 
 ## 标签元素的内置padding
 
 ### ol/ul
 
-1. ol/ul元素内置padding-left，单位是px不是em
+1. ol/ul元素内置`padding-left`，单位是px不是em
 2. 间距固定，字号过小显得间距过大，字号过大会溢出容器
 
 ### radio/checkbox
 
-无法设置padding
+无法设置`padding`
 
 ### button
 
-- FireFox下清空按钮padding
+- FireFox下清空按钮`padding`
 
-```
+``` css
 button::-moz-focus-inner {
     padding: 0; 
 }
