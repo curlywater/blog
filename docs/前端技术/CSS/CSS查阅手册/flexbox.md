@@ -1,7 +1,7 @@
 ---
 title: flexbox 弹性布局
 
-tags: [CSS基础]
+tags: [CSS布局]
 
 permalink: /f2e/css/css-basic/flexbox
 ---
@@ -85,3 +85,14 @@ permalink: /f2e/css/css-basic/flexbox
 `float`，`clear`并且`vertical-align`对弹性子项没有影响。
 
 flexbox只是对内容区域进行缩放，对`padding`无缩放功能。
+
+
+### margin
+
+> flex 格式化上下文中，在通过 justify-content 和 align-self 进行对齐之前，任何正处于空闲的空间都会分配到该方向的自动 margin 中去。
+
+> 使用了自动 margin 的 flex 子项目，它们父元素设置的 justify-content 以及它们本身的 align-self 将不再生效。
+
+`margin`巧用：设置子项在主轴上的对齐。
+
+[探秘 flex 上下文中神奇的自动 margin](https://www.cnblogs.com/coco1s/p/10910588.html)
