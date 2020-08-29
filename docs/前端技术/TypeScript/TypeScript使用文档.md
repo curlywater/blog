@@ -5,6 +5,8 @@ permalink: /f2e/typescript/handbook
 
 # TypeScript使用文档
 
+TypeScript官方文档要点提炼。
+
 ## TypeScript的立意
 
 JavaScrip是一门弱类型、动态语言。
@@ -13,7 +15,7 @@ JavaScrip是一门弱类型、动态语言。
 
 TypeScript在JavaScript的基础上加了一层类型系统。
 
-TypeScript希望提供强类型静态语言支持，以降低人为产生bug的概率。
+TypeScript希望提供强类型静态语言支持，降低人为产生bug的概率。
 
 ## 基本类型
 
@@ -28,16 +30,16 @@ TypeScript希望提供强类型静态语言支持，以降低人为产生bug的�
 
 除JavaScript提供的基本类型之外，TypeScript还提供了一些类型扩展
 
-**Array**
+### Array
 
-元素类型统一的数组，两种书写方式
+元素类型统一的数组，有以下两种书写方式：
 
 ``` ts
 let chars: string[] = ["a", "b"]; // 类型声明前置
 let numbers: Array<number> = [1, 2, 3]; // 泛型
 ```
 
-扩展：`ReadOnlyArray`只读数组。
+**扩展：`ReadOnlyArray`只读数组。**
 - 无法修改元素值（属性只读）
 - 无法进行数组操作（无数组方法）
 - 普通数组可直接赋值给只读数组，只读数组赋值给普通数组需要强转
@@ -51,7 +53,7 @@ let list1: number[] = readonlyList; // The type 'readonly number[]' is 'readonly
 let list2: number[] = readonlyList as Array<number>;
 ```
 
-**Tuple**
+### Tuple
 
 元组：元素类型不一致的数组，需要严格规范数组元素的分布。
 
@@ -63,11 +65,11 @@ list.push(3);
 list[3].toFixed(2); // Object is possibly 'undefined'.
 ```
 
-**Enum**
+### Enum
 
 枚举类型，为一组数据设置名字，数据默认从0开始递增；也可手动自定义值。
 
-可通过数据逆向查找到对应的名字。
+借助反向映射，通过数据逆向查找到对应的名字。
 
 ``` ts
 enum LockState {
@@ -79,12 +81,13 @@ let isLocked = LockState.Locked;
 let lockState: string = LockState[1];
 ```
 
-**Unknown**
+### Unknown
 
-无法确定的类型。
+未知类型。
 
-- `unknown`类型值无法赋值给其他类型，但可以通过类型判断预处理，
-- 无法对该类型值做任何操作
+- 因为未知，所以TS认为无法对该类型值做任何操作
+- 无法赋值给其他类型
+- 但可以通过类型判断再处理
 
 ``` ts
 let data: unknown;
@@ -97,7 +100,7 @@ if (typeof data === "number") {
 }
 ```
 
-**Any**
+### Any
 
 任意类型，相当于忽视类型检查。允许对该类型数据做任何操作。
 
@@ -109,7 +112,7 @@ let data: any = {
 data.isValid;
 ```
 
-**Void**
+### Void
 
 `undefined` | `null`(未设置`--strictNullChecks`的情况下)。
 
@@ -121,7 +124,7 @@ const handleOnClick = (): void => {
 }
 ```
 
-**Never**
+### Never
 
 永远不会有值。譬如下列函数的返回值：
 - 内部抛出异常的函数
@@ -146,12 +149,14 @@ let strLength: number = (<string>someValue).length; // 使用JSX时，只能使�
 
 ## 接口
 
-接口：声明一个复杂数据结构。
+接口：声明一个复杂类型。
 
 ### 鸭式辩型
 
-1. 无需同类型，与对象生成过程和实现细节无关。
-2. 传入对象的部分属性能满足所需属性即可
+1. 传入对象的部分属性能满足所需属性即可
+2. 无需同类型
+3. 与对象生成过程和实现细节无关。
+
 
 ### 接口中声明可选属性
 
@@ -415,7 +420,7 @@ myFunc([1,2,3]);
 const language = "en" | "zh-cn" | "ru"
 ```
 
-可以根据参数具体值进行函数重载
+可以根据参数类型进行函数重载
 
 ``` ts
 function createElement(tagName: "img"): HTMLImageElement;
@@ -429,6 +434,8 @@ function createElement(tagName: string): Element {
 ## 联合和交叉类型
 
 ### 联合类型 |
+
+只能访问共同的字段
 
 ``` ts
 interface Dog {
@@ -449,13 +456,14 @@ pet.sleep();
 pet.run(); // Property 'run' does not exist on type 'Duck'.
 
 ```
-- 共同的字段
-- 辨别类型的方式，又一个区分标识
+- 通过一个共有字段，辨别类型
 - 全面检查各种情况对应的返回值
 
 ### 交叉类型 &
 
-把现有的多种类型叠加到一起成为一种类型。需要确保类型之间没有冲突的字段。
+把现有的多种类型叠加到一起成为一种类型。
+
+需要确保类型之间没有冲突的字段。
 
 ``` ts
 interface Dog {
@@ -513,7 +521,7 @@ class Animal {
 
 `protected`修饰符与`private`修饰符的行为很相似，但有一点不同，`protected`成员在派生类中仍然可以访问。
 
-使用`protected`修饰构造函数，产生类无法被直接实例化，只可在派生类中通过`super`调用。
+使用`protected`修饰构造函数，类无法被直接实例化，只可在派生类中通过`super`调用。
 
 **`readonly`属性**
 
@@ -530,7 +538,7 @@ class Animal {
 
 ::: warning
 
-TS使用鸭式辨型，但在存在`private`/`protected`成员时，只有来自同一处声明，才认为这两个类型是兼容的
+TS使用鸭式辨型，但在存在`private`/`protected`成员时，只有来自同一处声明，才认为这两个类型是兼容的。
 :::
 
 ### 参数属性
@@ -541,7 +549,7 @@ class Animal {
 }
 ```
 
-在`constructor`参数重直接定义属性，特征是参数前使用修饰符修饰。
+在`constructor`参数重直接定义属性，参数前需要使用修饰符修饰。
 
 
 ### getter/setter
@@ -573,9 +581,9 @@ if (employee.fullName) {
 }
 ```
 
-存取器要求你将编译器设置为输出ECMAScript 5或更高。 不支持降级到ECMAScript 3。 
+使用前提：将编译器设置为输出ECMAScript 5或更高。 不支持降级到ECMAScript 3。 
 
-其次，只带有 get不带有 set的存取器自动被推断为 readonly。
+只带有 get不带有 set的属性自动被推断为 readonly。
 
 
 ### 静态属性
@@ -594,7 +602,9 @@ console.log(Grid.origin.x);
 
 不能直接实例化，由派生类具体实现抽象方法。
 
-使用abstract关键字修饰抽象类和抽象方法。
+使用`abstract`关键字修饰抽象类和抽象方法。
+
+抽象类描述一个实体，该实体上包含需要通过具体场景确认的部分，通过派生类具体实现。
 
 ``` ts
 abstract class Department {
@@ -621,8 +631,7 @@ let dog: Animal = new Animal(); // 实例类型
 let animal: typeof Animal = Animal;  // 类的类型
 ```
 
-
-### 接口继承类
+**接口继承类**
 
 接口是复杂类型的定义，因为类定义了类型，因此可以被接口继承。
 
@@ -632,18 +641,18 @@ let animal: typeof Animal = Animal;  // 类的类型
 
 ## 枚举
 
-枚举可以分为两种情况考虑，所有枚举成员都设定字面量枚举值，以及枚举成员需要通过初始化器计算
+枚举可以分为两种情况考虑：所有枚举成员都指定字面量枚举值，存在需要通过初始化器计算的枚举成员
 
 枚举成员需要通过初始化器计算:
-- 需计算的枚举项之前必须有数字枚举项，提供初始化器
+- 需计算的枚举项之前必须有数字枚举值，提供初始化器
 
-所有枚举成员都设定字面量枚举值:
-- 每个枚举成员称为一个类型
+所有枚举成员都指定字面量枚举值:
+- 每个枚举成员对应一个类型
 - 枚举类型本身变成了每个枚举成员的联合
 
 ### 反向映射
 
-键 -> 值，值 -> 键；
+键 <-> 值
 
 枚举本质是通过编译生成一个双向对象。因此不会为字符串枚举成员生成反向映射。
 
@@ -672,7 +681,7 @@ let nameOfA = Enum[a]; // "A"
 
 外部枚举和非外部枚举之间有一个重要的区别，在正常的枚举里，没有初始化方法的成员在编译后计算出常量作为枚举值。
 
-对于非常数的外部枚举而言，没有初始化方法需要在运行时计算。
+对于非常数的外部枚举而言，需要在运行时计算。
 
 ### 常量枚举
 
