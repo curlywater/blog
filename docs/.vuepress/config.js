@@ -60,7 +60,7 @@ const front2EndSidebar = [
   },
   {
     title: "TypeScript",
-    children: ["/前端技术/TypeScript/在VSCode中使用TypeScript.md"],
+    children: ["/前端技术/TypeScript/在VSCode中使用TypeScript.md", "/前端技术/TypeScript/TypeScript使用文档.md"],
   },
   {
     title: "源码解读",
