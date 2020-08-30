@@ -56,4 +56,19 @@ permalink: /algo/data-structure
 数组：访问效率高，大小固定，扩容代价
 链表：内存消耗翻倍，频繁操作，内存碎片，频繁GC
 
+**编程技巧**
 
+1. 设置哨兵，一致化插入第一个结点和删除最后一个结点的特殊情况
+2. 检查边界条件：
+    1. 空链表的执行情况
+    2. 只包含一个结点
+    3. 只包含两个结点
+    4. 处理头结点和尾结点
+
+- [x] [单链表反转](https://leetcode-cn.com/problems/reverse-linked-list/)
+- [] 链表中环的检测
+- [x] [两个有序的链表合并](https://leetcode-cn.com/problems/merge-two-sorted-lists/solution/liang-ge-you-xu-de-lian-biao-he-bing-shuang-lian-b/)
+- [] 删除链表倒数第 n 个结点
+- [x] [求链表的中间结点](https://leetcode-cn.com/problems/middle-of-the-linked-list/solution/kuai-man-zhi-zhen-by-curly_water/)
+- [x] [使用单链表判断回文串](https://leetcode-cn.com/problems/palindrome-linked-list/solution/hui-wen-lian-biao-zhong-jian-wei-zhi-fan-zhuan-by-/)
+- [x] [使用单链表实现LRU](https://leetcode-cn.com/problems/lru-cache-lcci/solution/lrudi-yi-ban-dan-lian-biao-shi-xian-by-curly_water/)
