@@ -82,7 +82,7 @@ const front2EndSidebar = [
   },
 ];
 
-const algorithmSidebar = ["/算法/", "/算法/复杂度计算/", "/算法/基础数据结构/", "/算法/排序/"];
+const algorithmSidebar = ["/算法/", "/算法/复杂度计算/", "/算法/基础数据结构/", "/算法/递归/", "/算法/排序/介绍.md", "/算法/排序/分析.md"];
 
 const exploreSidebar = [{
   title: "Git",
@@ -93,7 +93,17 @@ module.exports = {
   base: "/blog/",
   title: "Curly的Blog",
   description: "记录探索历程",
-  head: [["link", { rel: "icon", href: "/favicon.png" }]],
+  head: [["link", { rel: "icon", href: "/favicon.png" }], [
+    "script", {}, `
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?bee8141d3226bf8abf76962d6e22700f";
+      var s = document.getElementsByTagName("script")[0]; 
+      s.parentNode.insertBefore(hm, s);
+    })();
+    `
+  ]],
   configureWebpack: {
     resolve: {
       alias: {
