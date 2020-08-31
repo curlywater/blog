@@ -248,6 +248,25 @@ input.task-list-item-checkbox {
 
 在默认主题的样式中，只对 h1-h3 级标题做了字体定义，间接限定一篇文章的嵌套深度。h1-h3 级标题 > 加粗 > 普通文本，嵌套过深的文章需要拆分。这样似乎能控制一篇文章的复杂度，提高易读性。
 
+### 增加百度统计
+
+``` js
+// config.js
+module.exports = {
+  head: [[
+    "script", {}, `
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?xxxx";
+      var s = document.getElementsByTagName("script")[0]; 
+      s.parentNode.insertBefore(hm, s);
+    })();
+    `
+  ]]
+}
+```
+
 ### 可跟进优化的
 
 需要一个编辑器，目前写作中遇到的问题：
