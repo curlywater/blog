@@ -82,7 +82,7 @@ const front2EndSidebar = [
   },
 ];
 
-const algorithmSidebar = ["/算法/", "/算法/复杂度计算/", "/算法/基础数据结构/", "/算法/递归/", "/算法/排序/"];
+const algorithmSidebar = ["/算法/", "/算法/复杂度计算/", "/算法/基础数据结构/", "/算法/递归/", "/算法/排序/", "/算法/二分查找/"];
 
 const exploreSidebar = [{
   title: "Git",
