@@ -63,6 +63,12 @@ const front2EndSidebar = [
     children: ["/前端技术/TypeScript/在VSCode中使用TypeScript.md", "/前端技术/TypeScript/TypeScript使用文档.md"],
   },
   {
+    title: "模块化",
+    children: [
+      "/前端技术/模块化/前端模块化规范.md"
+    ],
+  },
+  {
     title: "源码解读",
     children: ["/前端技术/源码解读/探索Typography.js.md"],
   },
