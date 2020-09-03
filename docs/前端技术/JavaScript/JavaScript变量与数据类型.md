@@ -39,7 +39,9 @@ alert(str.test);
 
 - `number/string/boolean`也可以通过构造函数创建包装对象，例如`new String("123")`，`BigInt/Symbol`函数不能当作构造函数使用。
 
-P.S. 原始类型的对应函数：当作包装函数使用，效果是数据类型转换；当作构造函数使用，效果是产生包装对象。
+原始类型的对应函数：
+- 当作包装函数使用，效果是数据类型转换；
+- 当作构造函数使用，效果是产生包装对象。
 
 ### 原始类型间转换
 
@@ -79,7 +81,9 @@ P.S. 原始类型的对应函数：当作包装函数使用，效果是数据类
 
 Boolean转换：按照ECMA规范，`object`转换为`boolean`，其值为`true`
 
-转换为其他原始类型采用toPrimitive机制：
+其他原始类型转换：采用toPrimitive机制。
+
+**toPrimitive机制**
 
 引用类型转换为原始类型的期望值`hint`只有三种`"string"/"number"/"default"`
 
