@@ -33,7 +33,7 @@ const front2EndSidebar = [
           "/前端技术/CSS/CSS深入理解/absolute.md",
           "/前端技术/CSS/CSS深入理解/z-index.md",
           "/前端技术/CSS/CSS深入理解/overflow.md",
-        ]
+        ],
       },
       {
         title: "CSS查阅手册",
@@ -42,7 +42,7 @@ const front2EndSidebar = [
           "/前端技术/CSS/CSS查阅手册/border-radius/",
           "/前端技术/CSS/CSS查阅手册/font-family字体组合.md",
           "/前端技术/CSS/CSS查阅手册/flexbox.md",
-          "/前端技术/CSS/CSS查阅手册/grid.md"
+          "/前端技术/CSS/CSS查阅手册/grid.md",
         ],
       },
       "/前端技术/CSS/布局实例.md",
@@ -56,17 +56,19 @@ const front2EndSidebar = [
       "/前端技术/React/React知识体系/",
       "/前端技术/React/React组件的生命周期.md",
       "/前端技术/React/少量组件应用方案.md",
+      "/前端技术/React/React-Router.md"
     ],
   },
   {
     title: "TypeScript",
-    children: ["/前端技术/TypeScript/在VSCode中使用TypeScript.md", "/前端技术/TypeScript/TypeScript使用文档.md"],
+    children: [
+      "/前端技术/TypeScript/在VSCode中使用TypeScript.md",
+      "/前端技术/TypeScript/TypeScript使用文档.md",
+    ],
   },
   {
     title: "模块化和构建工具",
-    children: [
-      "/前端技术/模块化和构建工具/前端模块化规范.md"
-    ],
+    children: ["/前端技术/模块化和构建工具/前端模块化规范.md"],
   },
   {
     title: "源码解读",
@@ -76,31 +78,43 @@ const front2EndSidebar = [
     title: "项目记录",
     children: [
       "/前端技术/项目记录/个人博客搭建/",
-      {
-        title: "App Ideas编程挑战",
-        path: "/f2e/app-ideas/",
-        children: [
-          "/前端技术/项目记录/App-ideas/Bin2Dec/",
-          "/前端技术/项目记录/App-ideas/Border-radius Previewer.md",
-        ],
-      },
+      "/前端技术/项目记录/App-ideas/",
     ],
   },
 ];
 
-const algorithmSidebar = ["/算法/", "/算法/复杂度计算/", "/算法/基础数据结构/", "/算法/递归/", "/算法/排序/", "/算法/二分查找/", "/算法/散列表/"];
+const algorithmSidebar = [
+  "/算法/",
+  "/算法/复杂度计算/",
+  "/算法/基础数据结构/",
+  "/算法/递归/",
+  "/算法/排序/",
+  "/算法/二分查找/",
+  "/算法/散列表/",
+];
 
-const exploreSidebar = [{
-  title: "Git",
-  children: ["/探索/Git/如何规范Git Commit Message.md"]
-}]
+const exploreSidebar = [
+  "/探索/",
+  {
+    title: "Git",
+    children: ["/探索/Git/如何规范Git Commit Message.md"],
+  },
+  {
+    title: "收藏夹",
+    children: ["/探索/收藏夹/好用的开发工具.md"],
+  },
+];
 
 module.exports = {
   base: "/blog/",
   title: "Curly的Blog",
   description: "记录探索历程",
-  head: [["link", { rel: "icon", href: "/favicon.png" }], [
-    "script", {}, `
+  head: [
+    ["link", { rel: "icon", href: "/favicon.png" }],
+    [
+      "script",
+      {},
+      `
     var _hmt = _hmt || [];
     (function() {
       var hm = document.createElement("script");
@@ -108,8 +122,9 @@ module.exports = {
       var s = document.getElementsByTagName("script")[0]; 
       s.parentNode.insertBefore(hm, s);
     })();
-    `
-  ]],
+    `,
+    ],
+  ],
   configureWebpack: {
     resolve: {
       alias: {
@@ -129,7 +144,7 @@ module.exports = {
       },
       {
         text: "探索",
-        link: "/explore/"
+        link: "/explore/",
       },
       { text: "Github", link: "https://github.com/curlywater" },
     ],
@@ -137,7 +152,7 @@ module.exports = {
     sidebar: {
       "/前端技术/": front2EndSidebar,
       "/算法/": algorithmSidebar,
-      "/探索/": exploreSidebar
+      "/探索/": exploreSidebar,
     },
   },
   markdown: {

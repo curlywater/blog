@@ -1,3 +1,7 @@
+---
+title: 如何规范Git Commit Message
+permalink: /explore/git-commit
+---
 # 如何规范Git Commit Message
 
 在Angular的规范基础上衍生出 conventional commits，搭配辅助工具commitizen/cz-cli 和 commitlint 落地。
