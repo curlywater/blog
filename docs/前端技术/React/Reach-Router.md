@@ -18,7 +18,7 @@ permalink: /f2e/react/reach-router
 
 Reach Router最大的特点在于，依赖组件嵌套关系组织路由。这样的设计便利之处在于：
 - 把路由和组件融合在一起，不需要通过`<Route>`组件设定路径和组件的对应关系
-- 路由设定和导航时直接使用相对地址，Reach Router会根据路径自行组装绝对路径
+- 路由设定和导航时直接使用相对地址，Reach Router自行组装成绝对路径
 
 ``` js
 render(
@@ -40,7 +40,7 @@ render(
 );
 ```
 
-上面的代码，路径/dashboard/invoices最终的渲染结构是`<Home> -> <Dash> -> <Invoices>`
+上面的代码，路径`/dashboard/invoices`最终的渲染结构是`<Home> -> <Dash> -> <Invoices>`
 
 ``` js
 const Dash = ({ children }) => (
@@ -66,7 +66,7 @@ render(
 )
 ```
 
-上面这段代码，点击Invoices超链接，跳转至/dashborad/invoices
+上面这段代码，点击Invoices超链接，跳转至`/dashborad/invoices`
 
 
 ### 智能计算优先级
@@ -93,7 +93,7 @@ Reach Router这样的设计有助于大项目拆分，路由不再受限于顶�
 4. 组件可灵活重用到不同路由场景
 
 
-## 组件
+## API
 
 ### `<Router>`
 路由组件，Reach Router只支持history API和Memory两种历史记录管理方式，对应浏览器环境和非浏览器环境。选择哪种方式由Reach Router判断。

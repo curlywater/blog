@@ -7,7 +7,7 @@ permalink: /f2e/app-ideas
 
 [app-ideas](https://github.com/florinpop17/app-ideas)是 Github 上的一个开源编程挑战，意图在于为开发者提供一些练手的项目挑战。
 
-为了提供预览功能，我在一个React项目中集成了各个挑战。[项目入口](https://sourcegraph.com/github.com/curlywater/app-ideas-challenge)。
+为了提供预览功能，我在一个React项目中集成了各个挑战。[项目入口](https://curlywater.github.io/app-ideas-challenge/)。
 
 这篇文章记录实现项目中解决的问题和经验总结。
 
