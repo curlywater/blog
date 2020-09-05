@@ -199,12 +199,13 @@ ReactDOM.render(element, document.getElementById("root"));
 
 **`this.state`的更新有可能是异步的。**
 
-出于性能考虑，React 可能会把多个 `setState()` 调用合并成一个调用。`this.state`不会在`setState`调用后立即更新，在`render`调用时或`shouldComponentUpdate`返回`false`时才更新。`this.state`的更新并不完全一定是异步的:
+出于性能考虑，React 可能会把多个 `setState()` 调用合并成一个调用。`this.state`不会在`setState`调用后立即更新，在`render`调用时或`shouldComponentUpdate`返回`false`时才更新。
+
+`this.state`的更新并不完全一定是异步的:
 
 - 在组件生命周期中或者 react 事件绑定中，是通过异步更新的，setState 进行批量累积，走一次事务处理。
 - 在延时回调函数或者原生事件绑定的回调中，setState 不一定是异步的。
 
-更详细的解析可阅读[React setState 源码分析]()
 
 **使用函数式`setState`解决`this.state`依赖问题**。
 
@@ -237,7 +238,7 @@ function incrementMultiple() {
 
 每个组件都包含生命周期方法，在特定阶段执行这些方法。
 
-篇幅略长，单独提出一篇文章[React 组件的生命周期](/f2e/react/react-component/lifecycle/)。
+篇幅略长，单独提出一篇文章[React 组件的生命周期](/f2e/react/react-component-lifecycle)。
 
 ### 类组件和函数组件
 
@@ -357,6 +358,44 @@ class NameForm extends React.Component {
 ```
 
 两种方法都会更新 props，导致子组件重渲染。
+
+## 动态加载
+
+```js
+import React, { Suspense, lazy } from 'react';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+
+const Home = lazy(() => import('./routes/Home'));
+const About = lazy(() => import('./routes/About'));
+
+const App = () => (
+  <Router>
+    <Suspense fallback={<div>Loading...</div>}>
+      <Switch>
+        <Route exact path="/" component={Home}/>
+        <Route path="/about" component={About}/>
+      </Switch>
+    </Suspense>
+  </Router>
+);
+```
+
+`import()`是ES Module规范的动态加载语法，Webpack在处理`import()`时会为模块单独生成bundle。
+
+`React.lazy`接受一个返回Promise的函数作为参数，返回一个懒加载的外部模块。
+
+`Suspense`组件，等待加载子组件加载，并可以指定显示一个加载界面。
+
+
+## Context
+
+Context 设计目的是为了共享那些对于一个组件树而言是“全局”的数据。在组件树中很多不同层级的组件需要访问同样的一批数据。
+
+如果只是某个深度层级的子组件需要依赖数据，为了避免层层传递，那么使用props传递子组件或者使用render props会是更好的选择。
+
+
+
+
 
 ## 扩展阅读
 

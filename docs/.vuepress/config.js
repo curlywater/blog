@@ -3,6 +3,12 @@ const md = require("markdown-it")();
 const front2EndSidebar = [
   "/前端技术/",
   {
+    title: "HTML",
+    children: [
+      "/前端技术/HTML/HTML的基础标签.md"
+    ]
+  },
+  {
     title: "JavaScript",
     children: [
       "/前端技术/JavaScript/JavaScript变量与数据类型.md",
@@ -55,6 +61,7 @@ const front2EndSidebar = [
     children: [
       "/前端技术/React/React知识体系/",
       "/前端技术/React/React组件的生命周期.md",
+      "/前端技术/React/React与ReactDOM分别做了什么？.md",
       "/前端技术/React/少量组件应用方案.md",
       "/前端技术/React/React-Router.md",
       "/前端技术/React/Reach-Router.md"
