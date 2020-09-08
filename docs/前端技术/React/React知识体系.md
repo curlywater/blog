@@ -83,6 +83,11 @@ ReactDOM.render(<Count />, document.getElementById("app"));
 
 2. 视图和逻辑封装在一个`Count`组件里好维护可复用。
 
+从开发者的角度来说，React提供了组件化框架，使应用能够被原子化。
+
+从浏览器的角度来说，React的虚拟DOM和批量更新策略，避免浏览器多次频繁的重排重绘。
+
+
 ## JSX
 
 JSX 是一个**JavaScript 的语法扩展**，因此要让 JSX 代码在常规环境中运行，需要通过 Babel 编译。
@@ -181,11 +186,11 @@ ReactDOM.render(element, document.getElementById("root"));
 2. 元素类型相同时：
    1. 同类型元素，保留 DOM 节点，更新属性，继续对子节点递归。
    2. 同类型组件，保留组件实例，更新实例 props，调用组件重渲染流程。
-3. 对子节点递归，同时遍历两个子节点列表，当产生差异时生成一个 mutation，当在列表头插入时所有子节点都需要重新创建。所以加入`key`属性，
+3. 对子节点递归，同时遍历两个子节点列表，当产生差异时生成一个 mutation，当在列表头插入时所有子节点都需要重新创建。所以加入`key`属性。
 
 React 使用`key`来匹配原有树上的子元素以及最新树上的子元素。组件实例基于它们的 key 来决定是否更新以及复用。`key`属性的使用方式：
    1. 避免将索引值作为`key`使用。索引值会破会元素正确的对应关系，存在的隐患：
-      - 有子项删除或插入时，所有实例的props都发生改变，即使有`shouldComponentUpdate`限制，所有组件实例都会进入重渲染流程
+      - 有子项删除或插入时，所有实例的props都发生改变，所有组件实例都会进入重渲染流程
       - 在传入的数据实体变更时，组件实例中与props无关的状态不会重置
    2. 修改`key`强制重新创建组件
 
@@ -258,7 +263,7 @@ function Welcome(props) {
 }
 ```
 
-getSnapshotBeforeUpdate，componentDidCatch 以及 getDerivedStateFromError：目前还没有这些方法的 Hook 等价写法。还需使用类组件实现。
+`getSnapshotBeforeUpdate`，`componentDidCatch` 以及 `getDerivedStateFromError`：目前还没有这些方法的 Hook 等价写法。还需使用类组件实现。
 
 
 **类组件**
@@ -357,23 +362,21 @@ class NameForm extends React.Component {
 
 如果因为某些原因，当你需要使用浏览器的底层事件时，只需要使用 `nativeEvent` 属性来获取即可
 
-### 传递参数
-
-```html
-<button onClick={(e) => this.deleteRow(id, e)}>Delete Row</button>
-<button onClick={this.deleteRow.bind(this, id)}>Delete Row</button>
-```
-
-两种方法都会更新 props，导致子组件重渲染。
+React 在旧浏览器中重用了不同事件的事件对象，以提高性能，并将所有事件字段在它们之前设置为 null。
+在 React 16 及更早版本中，使用者必须调用 e.persist() 才能正确的使用该事件，或者正确读取需要的属性。
+在 React 17 中，此代码可以按照预期效果执行。旧的事件池优化操作已被完成删除，因此，使用者可以在需要时读取事件字段。
 
 
 ## Context
 
-Context 设计目的是为了共享那些对于一个组件树而言是“全局”的数据。在组件树中很多不同层级的组件需要访问同样的一批数据。
+Context 设计目的是为了共享那些对于一个组件树而言是“全局”的数据。Provider 及其内部 consumer 组件都不受制于 shouldComponentUpdate 函数，因此当 consumer 组件在其祖先组件退出更新的情况下也能更新。
+
+根据上述两条特征，Context 适用场景需要满足的条件：
+1. 在组件树中很多不同层级的组件需要访问同样的一批状态，
+2. 该状态不是频繁改变的
 
 如果只是某个深度层级的子组件需要依赖数据，为了避免层层传递，那么使用props传递子组件或者使用render props会是更好的选择。
 
-Provider 及其内部 consumer 组件都不受制于 shouldComponentUpdate 函数，因此当 consumer 组件在其祖先组件退出更新的情况下也能更新。
 
 使用和`Object.is`相同的算法判断新旧值变化。
 
@@ -501,6 +504,21 @@ function enhance(WrappedComponent) {
 ```
 
 ### Hook
+
+`render props`和HOC存在的问题在于：
+1. 需要组件间同时配合，复用逻辑的使用并不直观、便捷。
+2. 产生嵌套地狱，造成组件树越来越庞大。
+
+在React 16.8版本引入了hook，在函数组件上应用的新特性。
+
+React Hook的出现为了解决三个问题：
+1. 逻辑难以复用
+2. 组件太过复杂
+3. class组件不是很好用
+
+React Hook通过另一种思维解决上述的三个问题，函数化。
+
+组件本身只是一个轻量的函数组件，需要什么通过hook“钩入”就好了，类似于无限扩展的插槽，非常灵活。
 
 [React Hook使用介绍](/f2e/react/react-hook/)
 
