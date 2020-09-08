@@ -96,9 +96,7 @@ HTML 的作用可以简单总结为结构化、语义化和提供基础 API 支�
 - cite - 引文，引用源显示具体的文字
 
   ```html
-  <a href="https://developer.mozilla.org/zh-CN/docs/Web/Guide/HTML/HTML5"
-    ><cite>HTML5 是定义 HTML 标准的最新的版本</cite></a
-  >
+  <a href="https://developer.mozilla.org/zh-CN/docs/Web/Guide/HTML/HTML5"><cite>HTML5 是定义 HTML 标准的最新的版本</cite></a>
   ```
 
 **辅助**

@@ -157,11 +157,11 @@ render() {
    <Welcome {...props} />
    ```
 
-## 元素渲染
+## 元素
 
 使用 React 之后，开发者无需关心底层细节，更新 DOM 的部分由 ReactDOM 来负责。
 
-React 模块负责 React 核心部分，ReactDOM 模块负责将 React 元素的状态同步到 DOM 上。
+React 模块负责 React 特性接口，ReactDOM 模块负责实现特性并将元素状态同步到DOM上。
 
 ```js
 ReactDOM.render(element, document.getElementById("root"));
@@ -173,7 +173,7 @@ ReactDOM.render(element, document.getElementById("root"));
 >
 > 根据我们已有的知识，更新 UI 唯一的方式是创建一个全新的元素，并将其传入 [`ReactDOM.render()`](https://zh-hans.reactjs.org/docs/react-dom.html#render)。
 
-**虚拟 DOM 和 Diff 算法**
+**协调算法**
 
 `render`方法创建出一棵 React 元素组成的树，通过 diff 算法比较前后两棵树的差别判断如何有效地更新 UI。diff 算法简单介绍：
 
@@ -181,8 +181,12 @@ ReactDOM.render(element, document.getElementById("root"));
 2. 元素类型相同时：
    1. 同类型元素，保留 DOM 节点，更新属性，继续对子节点递归。
    2. 同类型组件，保留组件实例，更新实例 props，调用组件重渲染流程。
-3. 对子节点递归，同时遍历两个子节点列表，当产生差异时生成一个 mutation，当在列表头插入时所有子节点都需要重新创建。所以加入`key`属性，React 使用`key`来匹配原有树上的子元素以及最新树上的子元素。组件实例基于它们的 key 来决定是否更新以及复用。`key`属性的使用方式：
-   1. 避免将索引值作为`key`使用。索引值会破会元素正确的对应关系，相当于一个未使用`key`的列表
+3. 对子节点递归，同时遍历两个子节点列表，当产生差异时生成一个 mutation，当在列表头插入时所有子节点都需要重新创建。所以加入`key`属性，
+
+React 使用`key`来匹配原有树上的子元素以及最新树上的子元素。组件实例基于它们的 key 来决定是否更新以及复用。`key`属性的使用方式：
+   1. 避免将索引值作为`key`使用。索引值会破会元素正确的对应关系，存在的隐患：
+      - 有子项删除或插入时，所有实例的props都发生改变，即使有`shouldComponentUpdate`限制，所有组件实例都会进入重渲染流程
+      - 在传入的数据实体变更时，组件实例中与props无关的状态不会重置
    2. 修改`key`强制重新创建组件
 
 ## 组件
@@ -253,6 +257,9 @@ function Welcome(props) {
   return <h1>Hello, {props.name}</h1>;
 }
 ```
+
+getSnapshotBeforeUpdate，componentDidCatch 以及 getDerivedStateFromError：目前还没有这些方法的 Hook 等价写法。还需使用类组件实现。
+
 
 **类组件**
 
@@ -346,9 +353,9 @@ class NameForm extends React.Component {
 
 ### 合成事件
 
-> `SyntheticEvent` 实例将被传递给你的事件处理函数，它是浏览器的原生事件的跨浏览器包装器。除兼容所有浏览器外，它还拥有和浏览器原生事件相同的接口，包括 `stopPropagation()` 和 `preventDefault()`。
->
-> 如果因为某些原因，当你需要使用浏览器的底层事件时，只需要使用 `nativeEvent` 属性来获取即可
+合成实例是原生事件的跨浏览器包装器。兼容所有浏览器，并且提供和原生事件相同的接口。
+
+如果因为某些原因，当你需要使用浏览器的底层事件时，只需要使用 `nativeEvent` 属性来获取即可
 
 ### 传递参数
 
@@ -358,6 +365,154 @@ class NameForm extends React.Component {
 ```
 
 两种方法都会更新 props，导致子组件重渲染。
+
+
+## Context
+
+Context 设计目的是为了共享那些对于一个组件树而言是“全局”的数据。在组件树中很多不同层级的组件需要访问同样的一批数据。
+
+如果只是某个深度层级的子组件需要依赖数据，为了避免层层传递，那么使用props传递子组件或者使用render props会是更好的选择。
+
+Provider 及其内部 consumer 组件都不受制于 shouldComponentUpdate 函数，因此当 consumer 组件在其祖先组件退出更新的情况下也能更新。
+
+使用和`Object.is`相同的算法判断新旧值变化。
+
+只有当组件所处的树中没有匹配到 Provider 时，`React.createContext` 的 defaultValue 参数才会生效。
+
+## Refs
+
+获取组件实例或DOM元素。
+
+- 当`ref`用于HTML 元素时，`ref`接收DOM元素作为其`current`属性
+- 当`ref`用于类组件时，`ref`接收组件的挂载实例作为`current`属性
+- 因为函数组件没有实例，因此无法在函数组件上直接使用`ref`
+
+### 使用方法
+- `React.createRef()/useRef(null)`，React 会在组件挂载时给 current 属性传入 DOM 元素，并在组件卸载时传入 null 值。ref 会在 componentDidMount 或 componentDidUpdate 生命周期钩子触发前更新。
+- `回调函数`，React 在组件挂载时，会调用 ref 回调函数并传入 DOM 元素，当卸载时调用它并传入 null。在 componentDidMount 或 componentDidUpdate 触发前，React 会保证 refs 一定是最新的。
+
+### refs 转发
+
+用 React.forwardRef 来获取传递给它的 ref，然后转发到它的子组件或子HTML元素。
+
+``` js
+const FancyButton = React.forwardRef((props, ref) => (
+  <button ref={ref} className="FancyButton">
+    {props.children}
+  </button>
+));
+
+// 你可以直接获取 DOM button 的 ref：
+const ref = React.createRef();
+<FancyButton ref={ref}>Click me!</FancyButton>;
+```
+
+高阶组件转发refs，其实就是在中间加一层，通过props把ref传到被包裹函数上。
+
+
+## 复用组件逻辑
+
+### `render props`
+
+`render props`是一种基于React特性组合而成的设计模式。
+
+定义一个prop，这个prop是一个返回React元素的函数，在逻辑复用组件中调用该函数进行渲染。
+
+``` js
+
+class Mouse extends React.Component {
+  constructor(props) {
+    super(props);
+    this.handleMouseMove = this.handleMouseMove.bind(this);
+    this.state = { x: 0, y: 0 };
+  }
+
+  handleMouseMove(event) {
+    this.setState({
+      x: event.clientX,
+      y: event.clientY
+    });
+  }
+
+  render() {
+    return (
+      <div style={{ height: '100vh' }} onMouseMove={this.handleMouseMove}>
+
+        {/*
+          使用 `render`prop 动态决定要渲染的内容，
+          而不是给出一个 <Mouse> 渲染结果的静态表示
+        */}
+        {this.props.render(this.state)}
+      </div>
+    );
+  }
+}
+
+class MouseTracker extends React.Component {
+  // 定义为实例方法，`this.renderTheCat`始终
+  // 当我们在渲染中使用它时，它指的是相同的函数
+  renderTheCat(mouse) {
+    return <Cat mouse={mouse} />;
+  }
+
+  render() {
+    return (
+      <div>
+        <h1>Move the mouse around!</h1>
+        <Mouse render={this.renderTheCat} />
+      </div>
+    );
+  }
+}
+```
+
+### 高阶组件
+
+高阶组件并非React的特性，而是基于React特性组合而成的设计模式。
+
+``` js
+const EnhancedComponent = higherOrderComponent(WrappedComponent);
+```
+
+传入一个组件，返回一个新的组件。
+
+在高阶组件中封装复用逻辑，以`props`为接口和被包裹组件交互，在高阶组件层注入生命周期处理。
+
+使用`compose`组合高阶组件
+
+``` js
+const enhance = compose(
+  // 这些都是单参数的 HOC
+  withRouter,
+  connect(commentSelector)
+)
+const EnhancedComponent = enhance(WrappedComponent)
+```
+
+记得拷贝被包裹组件的静态方法
+
+``` js
+import hoistNonReactStatic from 'hoist-non-react-statics';
+function enhance(WrappedComponent) {
+  class Enhance extends React.Component {/*...*/}
+  hoistNonReactStatic(Enhance, WrappedComponent);
+  return Enhance;
+}
+```
+
+### Hook
+
+[React Hook使用介绍](/f2e/react/react-hook/)
+
+## 错误处理
+
+一个包含`static getDerivedStateFromError()` 或 `componentDidCatch()`生命周期方法的类组件，是一个错误边界。
+
+错误边界可以捕获子组件在渲染时的错误，无法捕获子组件在交互时的错误，比如在事件处理函数中的异常以及在异步回调函数中的异常。
+
+- 错误边界负责处理组件渲染时错误，并进行降级显示
+- 事件处理函数或异步回调函数注意做try...catch捕获，或者使用sentry捕获
+
 
 ## 动态加载
 
@@ -384,17 +539,7 @@ const App = () => (
 
 `React.lazy`接受一个返回Promise的函数作为参数，返回一个懒加载的外部模块。
 
-`Suspense`组件，等待加载子组件加载，并可以指定显示一个加载界面。
-
-
-## Context
-
-Context 设计目的是为了共享那些对于一个组件树而言是“全局”的数据。在组件树中很多不同层级的组件需要访问同样的一批数据。
-
-如果只是某个深度层级的子组件需要依赖数据，为了避免层层传递，那么使用props传递子组件或者使用render props会是更好的选择。
-
-
-
+`Suspense`组件，等待懒加载子组件加载，并可以指定显示一个加载界面。
 
 
 ## 扩展阅读

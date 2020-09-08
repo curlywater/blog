@@ -59,8 +59,9 @@ const front2EndSidebar = [
   {
     title: "React",
     children: [
-      "/前端技术/React/React知识体系/",
+      "/前端技术/React/React知识体系.md",
       "/前端技术/React/React组件的生命周期.md",
+      "/前端技术/React/React Hook使用介绍.md",
       "/前端技术/React/React与ReactDOM分别做了什么？.md",
       "/前端技术/React/少量组件应用方案.md",
       "/前端技术/React/React-Router.md",

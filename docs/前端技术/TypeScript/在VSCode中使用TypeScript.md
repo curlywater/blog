@@ -53,7 +53,7 @@ VS Code 并不提供 TS 运行时和编译环境，那么如何在 VS Code 中�
 ⇧⌘P -> **Preferences: Open Workspace Settings** -> files.exclude 添加规则：
 
 ```json
-`**/*.js: { "when": "$(basename).ts" }
+**/*.js: { "when": "$(basename).ts" }
 ```
 
 👆 这个 pattern 在说：“请隐藏目录下存在同名 ts 的 js 文件吧”
