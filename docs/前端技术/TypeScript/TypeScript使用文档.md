@@ -9,7 +9,7 @@ TypeScript官方文档要点提炼。
 
 ## TypeScript的立意
 
-JavaScrip是一门弱类型、动态语言。
+JavaScript是一门弱类型、动态语言。
 
 弱类型即无需指定变量类型，动态即一个变量可以保存不同类型的数据。
 
@@ -124,16 +124,18 @@ const handleOnClick = (): void => {
 }
 ```
 
+
+::: tip strictNullChecks
+在未设置`strictNullChecks`的编译环境中，`undefined/null`是所有类型的子类。
+在设置`strictNullChecks`的编译环境中，`null`只能赋值给`any/unknown`类型的变量，`undefined`只能赋值给`any/unknown/void`
+:::
+
 ### Never
 
 永远不会有值。譬如下列函数的返回值：
 - 内部抛出异常的函数
 - 内部无限循环的函数
 
-::: tip strictNullChecks
-在未设置`strictNullChecks`的编译环境中，`undefined/null`是所有类型的子类。
-在设置`strictNullChecks`的编译环境中，`null`只能赋值给`any/unknown`类型的变量，`undefined`只能赋值给`any/unknown/void`
-:::
 
 ### 类型断言
 
@@ -149,7 +151,7 @@ let strLength: number = (<string>someValue).length; // 使用JSX时，只能使�
 
 ## 接口
 
-接口：声明一个复杂类型。
+接口：创建一个复杂类型。
 
 ### 鸭式辩型
 
@@ -344,7 +346,7 @@ counter.reset = function () {};
 
 只要参数类型是匹配的，那么就认为它是有效的函数类型，而不在乎参数名是否正确。
 
-返回值必须声明，如果函数无返回值，需要声明为`void 0`。
+返回值必须声明，如果函数无返回值，需要声明为`void`。
 
 函数定义可不写类型，会通过类型声明推断。
 
@@ -641,8 +643,6 @@ let animal: typeof Animal = Animal;  // 类的类型
 
 ## 枚举
 
-枚举可以分为两种情况考虑：所有枚举成员都指定字面量枚举值，存在需要通过初始化器计算的枚举成员
-
 枚举成员需要通过初始化器计算:
 - 需计算的枚举项之前必须有数字枚举值，提供初始化器
 
@@ -766,6 +766,7 @@ let x = { a: 1, b: 2, c: 3, d: 4 };
 
 getProperty(x, "a");
 getProperty(x, "m");
+
 ```
 
 **工厂函数依赖类类型**
@@ -775,3 +776,626 @@ function create<T>(c: {new (): T}): T {
     return new c();
 }
 ```
+
+## 类型保护
+
+类型保护是一个表达式，以确保在运行时，该类型的属性、方法可被使用。有几种方式可以实现类型保护：
+
+**自定义的类型保护——类型谓语（type predicate）**
+定义一个函数，函数的返回类型是一个类型谓语(`parameterName is Type`)
+
+``` ts
+function isFish(pet: Fish | Bird): pet is Fish {
+  return (pet as Fish).swim !== undefined;
+}
+
+let pet = getSmallPet();
+
+if (isFish(pet)) {
+  pet.swim();
+} else {
+  pet.fly();
+}
+
+// 在if...else语句里，不仅知道if接受的是Fish类型的变量，同时知道else接受的是Bird类型的变量
+```
+
+**使用`in`操作符**
+
+确认属性或方法可用
+
+``` ts
+function move(pet: Fish | Bird) {
+  if ("swim" in pet) {
+    return pet.swim();
+  }
+  return pet.fly();
+}
+```
+
+**typeof 操作符**
+
+TypeScript会把`typeof`视为一种类型保护
+
+但是Typescript只会识别`typeof v === "typename"`和`typeof v !== "typename"`格式，同时，`"typename"`只支持`"number"`、`"string"`、`"boolean"`、`"symbol"`。其他的判断不会被视为类型保护。
+
+
+**instanceof 操作符**
+
+``` ts
+interface Padder {
+  getPaddingString(): string;
+}
+
+class SpaceRepeatingPadder implements Padder {
+  constructor(private numSpaces: number) {}
+  getPaddingString() {
+    return Array(this.numSpaces + 1).join(" ");
+  }
+}
+
+class StringPadder implements Padder {
+  constructor(private value: string) {}
+  getPaddingString() {
+    return this.value;
+  }
+}
+
+function getRandomPadder() {
+  return Math.random() < 0.5
+    ? new SpaceRepeatingPadder(4)
+    : new StringPadder("  ");
+}
+
+let padder: Padder = getRandomPadder();
+
+if (padder instanceof SpaceRepeatingPadder) {
+  padder;
+}
+if (padder instanceof StringPadder) {
+  padder;
+}
+```
+
+**处理联合Nullable的类型**
+
+直接判断
+``` ts
+function f(stringOrNull: string | null): string {
+  if (stringOrNull === null) {
+    return "default";
+  } else {
+    return stringOrNull;
+  }
+}
+```
+
+terser operators
+``` ts
+function f(stringOrNull: string | null): string {
+  return stringOrNull ?? "default";
+}
+```
+
+类型断言操作符：添加!后缀，去除`null`和`undefined`的情况
+``` ts
+user!.email!.length;
+```
+
+
+
+## 类型别名
+
+``` ts
+type Animal = {
+  name: string
+}
+```
+
+类型别名不创建类型，只是创建一个名字，由这个名字引用类型
+
+**类型别名和接口的区别**
+
+- 类型别名不创建类型，只是创建一个名字引用类型； -> 类型别名不能被 extends和 implements（自己也不能 extends和 implements其它类型）
+- 类型别名可表示联合类型或元组类型 -> 接口无法表示的类型可由类型别名表示
+
+
+## 索引类型
+
+``` ts
+function pluck<T, K extends keyof T>(o: T, names: K[]): T[K][] {
+  return names.map(n => o[n]);
+}
+
+interface Person {
+    name: string;
+    age: number;
+}
+let person: Person = {
+    name: 'Jarid',
+    age: 35
+};
+let strings: string[] = pluck(person, ['name']); // ok, string[]
+
+```
+`keyof`，索引类型查询操作符，`keyof T`，返回T中已知公共的属性联合类型。
+
+ `T[K]`，索引访问操作符，代表person['name']对应的类型是Person['name']。
+
+
+ ## 映射类型
+
+ 从旧类型中创建新类型。这是一个生成类型的语法，而不是定义类型中的某个成员。内部依赖`for...in`来实现。
+
+ ``` ts
+ type PartialWithNewMember<T> = {
+  [P in keyof T]?: T[P];
+} & { newMember: boolean }
+ ```
+
+基于类型映射实现的内部应用类型
+
+``` ts
+type Partial<Type> = {
+    [P in keyof Type]?: Type[P]
+}
+
+type ReadOnly<Type> = {
+    readonly [P in keyof Type]: Type[P]
+}
+
+type Record<Keys extends keyof any, Type> = {
+    [P in Keys]: Type
+}
+
+type Pick<Type, Keys extends keyof Type> = {
+    [P in Keys]: Type[P]
+}
+```
+
+## 内置类型
+
+``` ts
+// Omit<Type, Keys> 从Type中移除Keys对应的属性
+interface Todo {
+  title: string;
+  description: string;
+  completed: boolean;
+}
+
+type TodoPreview = Omit<Todo, "description">;
+
+const todo: TodoPreview = {
+  title: "Clean room",
+  completed: false,
+};
+
+// Exclude<Type, ExcludedUnion> 移除Union
+type T0 = Exclude<"a" | "b" | "c", "a" | "b">;
+//    ^ = type T0 = "b" | "c"
+
+// Extract<Type, Union> 选择交集
+type T1 = Extract<string | number | (() => void), Function>;
+//    ^ = type T1 = () => void
+
+// NonNullable<Type> 移除nullable的部分
+type T0 = NonNullable<string | number | undefined>;
+//    ^ = type T0 = string | number
+
+// Parameters<Type> 将函数参数类型提取一个Tuple
+type T0 = Parameters<() => string>;
+//    ^ = type T0 = []
+type T1 = Parameters<(s: string) => void>;
+//    ^ = type T1 = [s: string]
+type T2 = Parameters<<T>(arg: T) => T>;
+//    ^ = type T2 = [arg: unknown]
+
+
+// ConstructorParameters<Type> 从constructor提取一个Tuple
+type T0 = ConstructorParameters<ErrorConstructor>;
+//    ^ = type T0 = [message?: string]
+type T1 = ConstructorParameters<FunctionConstructor>;
+//    ^ = type T1 = string[]
+type T2 = ConstructorParameters<RegExpConstructor>;
+//    ^ = type T2 = [pattern: string | RegExp, flags?: string]
+type T3 = ConstructorParameters<any>;
+//    ^ = type T3 = unknown[]
+
+// ReturnType<Type> 提取函数返回值的类型
+declare function f1(): { a: number; b: string };
+type T0 = ReturnType<() => string>;
+//    ^ = type T0 = string
+type T1 = ReturnType<(s: string) => void>;
+//    ^ = type T1 = void
+type T2 = ReturnType<<T>() => T>;
+//    ^ = type T2 = unknown
+type T4 = ReturnType<typeof f1>;    // 函数的类型
+//    ^ = type T4 = {
+//    a: number;
+//    b: string;
+//}
+
+
+// InstanceType<Type> 创建一个由constructor中实例类型组成的类型
+class C {
+  x = 0;
+  y = 0;
+}
+
+type T0 = InstanceType<typeof C>;
+//    ^ = type T0 = C
+
+
+```
+
+## 装饰器
+
+装饰器是ES6处于stage2阶段提案，TypeScript对实验性特性提供了支持。使用装饰器需要在`tsconfig.js`中做如下配置
+
+``` js
+{
+    "compilerOptions": {
+        "target": "ES5",
+        "experimentalDecorators": true
+    }
+}
+```
+
+装饰器使用`@expression`形式，在运行时，执行expression函数，对类的构造函数、方法、属性、访问器、参数做附加的操作。
+
+装饰器必须紧靠着作用对象的声明。因此不能用在声明文件或外部上下文中。
+
+**类装饰器**
+
+应用在类的构造函数上。
+
+
+``` ts
+// 类装饰器得到的参数是类的构造函数
+function classDecorator<T extends {new(...args:any[]):{}}>(constructor:T) {
+    return class extends constructor {
+        newProperty = "new property";
+        hello = "override";
+    }
+}
+
+@classDecorator
+class Greeter {
+    property = "property";
+    hello: string;
+    constructor(m: string) {
+        this.hello = m;
+    }
+}
+
+console.log(new Greeter("world"));
+```
+
+
+**方法装饰器**
+
+应用到方法的 属性描述符上，可以用来监视，修改或者替换方法定义。
+
+``` ts
+class Greeter {
+    greeting: string;
+    constructor(message: string) {
+        this.greeting = message;
+    }
+
+    @enumerable(false)
+    greet() {
+        return "Hello, " + this.greeting;
+    }
+}
+
+
+function enumerable(value: boolean) {
+    // target: 对于静态成员来说是类的构造函数，对于实例成员是类的原型对象。
+    // propertyKey: 属性名
+    // descriptor: 属性描述符
+    return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+        descriptor.enumerable = value;
+    };
+}
+```
+
+**访问器装饰器**
+
+访问器装饰器应用于访问器的 属性描述符并且可以用来监视，修改或替换一个访问器的定义。
+
+``` ts
+class Point {
+    private _x: number;
+    private _y: number;
+    constructor(x: number, y: number) {
+        this._x = x;
+        this._y = y;
+    }
+
+    @configurable(false)
+    get x() { return this._x; }
+
+    @configurable(false)
+    get y() { return this._y; }
+}
+
+function configurable(value: boolean) {
+    return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+        descriptor.configurable = value;
+    };
+}
+```
+
+**属性装饰器**
+
+
+``` ts
+import "reflect-metadata";
+
+const formatMetadataKey = Symbol("format");
+
+function format(formatString: string) {
+    return Reflect.metadata(formatMetadataKey, formatString);
+}
+
+function getFormat(target: any, propertyKey: string) {
+    return Reflect.getMetadata(formatMetadataKey, target, propertyKey);
+}
+
+class Greeter {
+    @format("Hello, %s")
+    greeting: string;
+
+    constructor(message: string) {
+        this.greeting = message;
+    }
+    greet() {
+        let formatString = getFormat(this, "greeting");
+        return formatString.replace("%s", this.greeting);
+    }
+}
+```
+
+
+**参数装饰器**
+
+``` ts
+class Greeter {
+    greeting: string;
+
+    constructor(message: string) {
+        this.greeting = message;
+    }
+
+    @validate
+    greet(@required name: string) {
+        return "Hello " + name + ", " + this.greeting;
+    }
+}
+
+
+function required(target: Object, propertyKey: string | symbol, parameterIndex: number) {
+    // target: 对于静态成员来说是类的构造函数，对于实例成员是类的原型对象。
+    // propertyKey: 属性名
+    // parameterIndex: 参数索引
+    let existingRequiredParameters: number[] = Reflect.getOwnMetadata(requiredMetadataKey, target, propertyKey) || [];
+    existingRequiredParameters.push(parameterIndex);
+    Reflect.defineMetadata(requiredMetadataKey, existingRequiredParameters, target, propertyKey);
+}
+```
+
+
+## 声明合并
+
+TypeScript声明会创建三种类型的实体：namespace/type/value
+
+|   Declaration Type   |   Namespace   |  Type  | Value |
+| ---- | ---- | ---- | ---- |
+|   Namespace   |   X   |      |   X   |
+|   Class   |      |   X   |   X  |
+|   Enum   |      |   X   |   X   |
+|   Interface |     |   X   |       |
+|   Type Alias  |       |   X   |       |
+|   Function    |       |       |   X   |
+|   Variable    |       |       |   X   |
+
+“声明合并”是指编译器将针对同一个名字的两个独立声明合并为单一声明。
+
+**合并接口**
+
+``` ts
+interface Box {
+    height: number;
+    width: number;
+}
+
+interface Box {
+    scale: number;
+}
+
+let box: Box = {height: 5, width: 6, scale: 10};
+```
+
+接口中的非函数成员需要是同类型的，不然会出现类型冲突错误。
+
+对于函数成员，每个同名函数声明都会被当成这个函数的一个重载
+
+
+**命名空间合并**
+
+只会合并导出成员
+
+``` ts
+namespace Animals {
+    export class Zebra { }
+}
+
+namespace Animals {
+    export interface Legged { numberOfLegs: number; }
+    export class Dog { }
+}
+
+namespace Animals {
+    export interface Legged { numberOfLegs: number; }
+
+    export class Zebra { }
+    export class Dog { }
+}
+```
+
+
+**命名空间和类、函数、枚举类型合并**
+
+内部类模式
+
+``` ts
+class Album {
+    label: Album.AlbumLabel;
+}
+namespace Album {
+    export class AlbumLabel { }
+}
+```
+
+函数扩展属性
+
+``` ts
+function buildLabel(name: string): string {
+    return buildLabel.prefix + name + buildLabel.suffix;
+}
+
+namespace buildLabel {
+    export let suffix = "";
+    export let prefix = "Hello, ";
+}
+
+console.log(buildLabel("Sam Smith"));
+```
+
+扩展枚举型
+
+``` ts
+enum Color {
+    red = 1,
+    green = 2,
+    blue = 4
+}
+
+namespace Color {
+    export function mixColor(colorName: string) {
+        if (colorName == "yellow") {
+            return Color.red + Color.green;
+        }
+        else if (colorName == "white") {
+            return Color.red + Color.green + Color.blue;
+        }
+        else if (colorName == "magenta") {
+            return Color.red + Color.blue;
+        }
+        else if (colorName == "cyan") {
+            return Color.green + Color.blue;
+        }
+    }
+}
+```
+
+
+## Mixins
+
+将类组合到一起
+
+- 声明辅助类作为mixins，主类`implements`辅助类。
+- 主类中简单定义辅助类中的属性和方法，作为占位
+- 使用`applyMixins`把mixins混入主类
+
+``` js
+function applyMixins(derivedCtor: any, baseCtors: any[]) {
+    baseCtors.forEach(baseCtor => {
+        Object.getOwnPropertyNames(baseCtor.prototype).forEach(name => {
+            derivedCtor.prototype[name] = baseCtor.prototype[name];
+        })
+    });
+}
+
+```
+
+
+## 模块
+
+TypeScript的类型声明同样支持模块的概念，支持ES Module和AMD的模块化规范，但不能混合使用。
+
+为了支持CommonJS和AMD的exports, TypeScript提供了export =语法。
+
+export =语法定义一个模块的导出对象。 这里的对象一词指的是类，接口，命名空间，函数或枚举。
+
+若使用export =导出一个模块，则必须使用TypeScript的特定语法import module = require("module")来导入此模块。
+
+模块是一个独立的作用域，因此不需要和命名空间一起使用。模块中的任何类型声明都能够通过`export`关键字导出
+
+`.d.ts`文件用来定义声明类型的API
+
+在声明外部模块时，我们可以使用顶级的 export声明来为每个模块都定义一个.d.ts文件，但最好还是写在一个大的.d.ts文件里。使用`declare module X`包裹，模块中的类型声明API通过`export`导出。
+``` ts
+// node.d.ts
+
+declare module "url" {
+    export interface Url {
+        protocol?: string;
+        hostname?: string;
+        pathname?: string;
+    }
+
+    export function parse(urlStr: string, parseQueryString?, slashesDenoteHost?): Url;
+}
+
+declare module "path" {
+    export function normalize(p: string): string;
+    export function join(...paths: any[]): string;
+    export let sep: string;
+}
+```
+
+``` ts
+/// <reference path="node.d.ts"/>
+import * as URL from "url";
+let myUrl = URL.parse("http://www.typescriptlang.org");
+```
+
+假如你不想在使用一个新模块之前花时间去编写声明，你可以采用声明的简写形式以便能够快速使用它，所有的导出类型都会是any
+``` ts
+declare module "hot-new-module";
+```
+
+
+### 模块解析
+
+编译器定位模块声明文件有两种策略：Classic和Node
+
+**Classic策略**
+这种策略在以前是TypeScript默认的解析策略。 现在，它存在的理由主要是为了向后兼容。
+- 对于相对定位的模块：根据路径先查找模块文件，再查找`.d.ts`模块声明文件
+- 对于绝对定位的模块：从当前路径依次向上级查找模块文件，再查找`.d.ts`模块声明文件
+
+
+**Node策略**
+
+试图在运行时模仿Node.js模块解析机制
+
+Node.js的策略：
+- 相对定位的模块
+    1. 检查模块对应的js文件是否存在（`/root/src/moduleB.js`）
+    2. 检查`/root/src/moduleB`目录下是否包含一个`package.json`文件，且`package.json`文件指定了一个`main`模块。引用这个main模块
+    3. 检查`/root/src/moduleB/index.js`是否存在
+- 绝对定位的模块：沿当前目录向上查找`node_modules`，在`node_modules`里的查找方式和相对定位模块相同
+
+TypeScript的Node策略：在Node.js的查找策略上加上`.ts，.tsx和.d.ts`后缀名支持。在`package.json`文件中根据`types`字段确定模块。
+
+
+## 命名空间
+
+命名空间的存在是为了避免命名冲突
+
+命名空间中可供外部调用的声明需要export
+
+命名空间被拆分到多文件，仍属于一个命名空间，使用引用标签表示命名空间之间的引用关系。

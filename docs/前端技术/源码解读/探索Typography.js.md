@@ -1,4 +1,7 @@
-
+---
+title: 探索Typography.js
+permalink: /f2e/source/typography.js
+---
 # 探索 Typography.js
 
 起源是想为个人博客定制一个不错的文章排版，然而没有找到相关的工具，以此为契机接触到 Typography.js。

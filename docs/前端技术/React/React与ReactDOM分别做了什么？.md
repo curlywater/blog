@@ -497,7 +497,7 @@ function enqueueUpdate<State>(fiber: Fiber, update: Update<State>) {
 
 ```
 
-`enqueueUpdate(current, update);` // 把update插入到队列，在第一次更新时生成的是一个环
+`enqueueUpdate(current, update);` // 把update插入到更新队列，在第一次更新时生成的是一个环
 `scheduleUpdateOnFiber(current, lane, eventTime);` // 通过Fiber进行更新调度
 
 ## ReactDOM怎么知道需要进行更新？
@@ -549,7 +549,7 @@ const React = {
 > react包仅仅是让你使用 React 的特性，但是它完全不知道这些特性是如何实现的。而渲染器包(react-dom、react-native等)提供了React特性的实现以及平台特定的逻辑。
 
 
-`React.Component/hooks/Context/Refs/setState/事件处理`...这些都是React 的特性，可以简单地认知为面向React使用者的接口。而这些特性的具体实现部分是又RaectDOM来负责的。
+`React.Component/hooks/Context/Refs/setState/事件处理`...这些都是React 的特性，可以简单地认知为面向React使用者的接口。而这些特性的具体实现部分是由ReactDOM来负责的。
 
 在初始化阶段，`React.createElement`返回一颗React元素树，交给ReactDOM做Fiber树构建。
 
