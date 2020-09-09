@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>debounce 源码解读 | Curly的Blog</title>
+    <meta name="generator" content="VuePress 1.5.3">
+    <link rel="icon" href="/blog/favicon.png">
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?bee8141d3226bf8abf76962d6e22700f";
+      var s = document.getElementsByTagName("script")[0]; 
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+    <meta name="description" content="记录探索历程">
+    <link rel="preload" href="/blog/assets/css/0.styles.5563ef6a.css" as="style"><link rel="preload" href="/blog/assets/js/app.ad8c6a18.js" as="script"><link rel="preload" href="/blog/assets/js/3.ce09a418.js" as="script"><link rel="preload" href="/blog/assets/js/47.667eef97.js" as="script"><link rel="prefetch" href="/blog/assets/js/10.e5a1f46f.js"><link rel="prefetch" href="/blog/assets/js/11.23cac595.js"><link rel="prefetch" href="/blog/assets/js/12.459bc8a4.js"><link rel="prefetch" href="/blog/assets/js/13.8452325d.js"><link rel="prefetch" href="/blog/assets/js/14.da7da709.js"><link rel="prefetch" href="/blog/assets/js/15.575f202a.js"><link rel="prefetch" href="/blog/assets/js/16.cccaed16.js"><link rel="prefetch" href="/blog/assets/js/17.f8164258.js"><link rel="prefetch" href="/blog/assets/js/18.43ebccc3.js"><link rel="prefetch" href="/blog/assets/js/19.3eace7bd.js"><link rel="prefetch" href="/blog/assets/js/20.19941b97.js"><link rel="prefetch" href="/blog/assets/js/21.ea82998b.js"><link rel="prefetch" href="/blog/assets/js/22.8e4a4dcf.js"><link rel="prefetch" href="/blog/assets/js/23.6c824cc8.js"><link rel="prefetch" href="/blog/assets/js/24.44726bc0.js"><link rel="prefetch" href="/blog/assets/js/25.9e53a540.js"><link rel="prefetch" href="/blog/assets/js/26.8b48df03.js"><link rel="prefetch" href="/blog/assets/js/27.fdbf6a61.js"><link rel="prefetch" href="/blog/assets/js/28.4f51147e.js"><link rel="prefetch" href="/blog/assets/js/29.6b40e241.js"><link rel="prefetch" href="/blog/assets/js/30.b74fb900.js"><link rel="prefetch" href="/blog/assets/js/31.37a9419d.js"><link rel="prefetch" href="/blog/assets/js/32.839d367e.js"><link rel="prefetch" href="/blog/assets/js/33.b4454420.js"><link rel="prefetch" href="/blog/assets/js/34.ad790a2f.js"><link rel="prefetch" href="/blog/assets/js/35.f838384b.js"><link rel="prefetch" href="/blog/assets/js/36.4e3750d2.js"><link rel="prefetch" href="/blog/assets/js/37.c22b2402.js"><link rel="prefetch" href="/blog/assets/js/38.a7a25ed2.js"><link rel="prefetch" href="/blog/assets/js/39.e592901e.js"><link rel="prefetch" href="/blog/assets/js/4.61109045.js"><link rel="prefetch" href="/blog/assets/js/40.4f2875d3.js"><link rel="prefetch" href="/blog/assets/js/41.09fe9516.js"><link rel="prefetch" href="/blog/assets/js/42.0a6e916c.js"><link rel="prefetch" href="/blog/assets/js/43.ddaf5642.js"><link rel="prefetch" href="/blog/assets/js/44.e5199151.js"><link rel="prefetch" href="/blog/assets/js/45.bca4d4ee.js"><link rel="prefetch" href="/blog/assets/js/46.153a2ad5.js"><link rel="prefetch" href="/blog/assets/js/48.21d035d5.js"><link rel="prefetch" href="/blog/assets/js/49.1f473d9c.js"><link rel="prefetch" href="/blog/assets/js/5.9ffc748a.js"><link rel="prefetch" href="/blog/assets/js/50.2d16cb13.js"><link rel="prefetch" href="/blog/assets/js/51.2f51fdf2.js"><link rel="prefetch" href="/blog/assets/js/52.11f10dae.js"><link rel="prefetch" href="/blog/assets/js/53.eb270d38.js"><link rel="prefetch" href="/blog/assets/js/54.ddee3f83.js"><link rel="prefetch" href="/blog/assets/js/55.698aec28.js"><link rel="prefetch" href="/blog/assets/js/56.640c43a2.js"><link rel="prefetch" href="/blog/assets/js/57.c184cbd9.js"><link rel="prefetch" href="/blog/assets/js/58.1ddb9c42.js"><link rel="prefetch" href="/blog/assets/js/59.4096b7a5.js"><link rel="prefetch" href="/blog/assets/js/6.25303515.js"><link rel="prefetch" href="/blog/assets/js/7.8ca2edb7.js"><link rel="prefetch" href="/blog/assets/js/8.cb98f634.js"><link rel="prefetch" href="/blog/assets/js/9.48ece269.js"><link rel="prefetch" href="/blog/assets/js/vendors~flowchart.6dfce6e9.js">
+    <link rel="stylesheet" href="/blog/assets/css/0.styles.5563ef6a.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/blog/" class="home-link router-link-active"><!----> <span class="site-name">Curly的Blog</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/blog/f2e/" class="nav-link router-link-active">
+  前端技术
+</a></div><div class="nav-item"><a href="/blog/algo/" class="nav-link">
+  算法
+</a></div><div class="nav-item"><a href="/blog/explore/" class="nav-link">
+  探索
+</a></div><div class="nav-item"><a href="https://github.com/curlywater" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  Github
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></div> <!----></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="/blog/f2e/" class="nav-link router-link-active">
+  前端技术
+</a></div><div class="nav-item"><a href="/blog/algo/" class="nav-link">
+  算法
+</a></div><div class="nav-item"><a href="/blog/explore/" class="nav-link">
+  探索
+</a></div><div class="nav-item"><a href="https://github.com/curlywater" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  Github
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></div> <!----></nav>  <ul class="sidebar-links"><li><a href="/blog/f2e/" aria-current="page" class="sidebar-link">目录</a></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>HTML</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>JavaScript</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>CSS</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>React</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>TypeScript</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>模块化和构建工具</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>源码解读</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>项目记录</span> <span class="arrow right"></span></p> <!----></section></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="debounce-源码解读"><a href="#debounce-源码解读" class="header-anchor">#</a> debounce 源码解读</h1> <h2 id="api介绍"><a href="#api介绍" class="header-anchor">#</a> API介绍</h2> <div class="language-ts line-numbers-mode"><pre class="language-ts"><code><span class="token keyword">interface</span> <span class="token class-name">DebounceSettings</span> <span class="token punctuation">{</span>
+    <span class="token comment">/**
+     * @see _.leading
+     */</span>
+    leading<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">boolean</span><span class="token punctuation">;</span>
+    <span class="token comment">/**
+     * @see _.maxWait
+     */</span>
+    maxWait<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">;</span>
+    <span class="token comment">/**
+     * @see _.trailing
+     */</span>
+    trailing<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">boolean</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">interface</span> <span class="token class-name">DebouncedFunc<span class="token operator">&lt;</span><span class="token constant">T</span> <span class="token keyword">extends</span> <span class="token punctuation">(</span><span class="token operator">...</span>args<span class="token operator">:</span> <span class="token builtin">any</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span></span> <span class="token builtin">any</span><span class="token operator">&gt;</span> <span class="token punctuation">{</span>
+    <span class="token comment">/**
+     * Call the original function, but applying the debounce rules.
+     *
+     * If the debounced function can be run immediately, this calls it and returns its return
+     * value.
+     *
+     * Otherwise, it returns the return value of the last invokation, or undefined if the debounced
+     * function was not invoked yet.
+     */</span>
+    <span class="token punctuation">(</span><span class="token operator">...</span>args<span class="token operator">:</span> Parameters<span class="token operator">&lt;</span><span class="token constant">T</span><span class="token operator">&gt;</span><span class="token punctuation">)</span><span class="token operator">:</span> ReturnType<span class="token operator">&lt;</span><span class="token constant">T</span><span class="token operator">&gt;</span> <span class="token operator">|</span> <span class="token keyword">undefined</span><span class="token punctuation">;</span>
+
+    <span class="token comment">/**
+     * Throw away any pending invokation of the debounced function.
+     */</span>
+    <span class="token function">cancel</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token keyword">void</span><span class="token punctuation">;</span>
+
+    <span class="token comment">/**
+     * If there is a pending invokation of the debounced function, invoke it immediately and return
+     * its return value.
+     *
+     * Otherwise, return the value from the last invokation, or undefined if the debounced function
+     * was never invoked.
+     */</span>
+    <span class="token function">flush</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">:</span> ReturnType<span class="token operator">&lt;</span><span class="token constant">T</span><span class="token operator">&gt;</span> <span class="token operator">|</span> <span class="token keyword">undefined</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+debounce<span class="token operator">&lt;</span><span class="token constant">T</span> <span class="token keyword">extends</span> <span class="token punctuation">(</span><span class="token operator">...</span>args<span class="token operator">:</span> <span class="token builtin">any</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token builtin">any</span><span class="token operator">&gt;</span><span class="token punctuation">(</span>func<span class="token operator">:</span> <span class="token constant">T</span><span class="token punctuation">,</span> wait<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">,</span> options<span class="token operator">?</span><span class="token operator">:</span> DebounceSettings<span class="token punctuation">)</span><span class="token operator">:</span> DebouncedFunc<span class="token operator">&lt;</span><span class="token constant">T</span><span class="token operator">&gt;</span><span class="token punctuation">;</span>
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br><span class="line-number">30</span><br><span class="line-number">31</span><br><span class="line-number">32</span><br><span class="line-number">33</span><br><span class="line-number">34</span><br><span class="line-number">35</span><br><span class="line-number">36</span><br><span class="line-number">37</span><br><span class="line-number">38</span><br><span class="line-number">39</span><br><span class="line-number">40</span><br><span class="line-number">41</span><br><span class="line-number">42</span><br></div></div><p>防抖，从上一次调用后延迟[wait]秒再调用func函数。</p> <ul><li><code>leading</code>：先调用后等待</li> <li><code>trailing</code>：先等待后调用</li> <li><code>maxWait</code>：允许被延迟的最大值</li></ul> <p>特征：停止时再触发</p> <h2 id="源码"><a href="#源码" class="header-anchor">#</a> 源码</h2> <div class="language-js line-numbers-mode"><pre class="language-js"><code><span class="token keyword">import</span> isObject <span class="token keyword">from</span> <span class="token string">'./isObject.js'</span>
+<span class="token keyword">import</span> root <span class="token keyword">from</span> <span class="token string">'./.internal/root.js'</span>
+
+<span class="token comment">/**
+ * Creates a debounced function that delays invoking `func` until after `wait`
+ * milliseconds have elapsed since the last time the debounced function was
+ * invoked, or until the next browser frame is drawn. The debounced function
+ * comes with a `cancel` method to cancel delayed `func` invocations and a
+ * `flush` method to immediately invoke them. Provide `options` to indicate
+ * whether `func` should be invoked on the leading and/or trailing edge of the
+ * `wait` timeout. The `func` is invoked with the last arguments provided to the
+ * debounced function. Subsequent calls to the debounced function return the
+ * result of the last `func` invocation.
+ *
+ * **Note:** If `leading` and `trailing` options are `true`, `func` is
+ * invoked on the trailing edge of the timeout only if the debounced function
+ * is invoked more than once during the `wait` timeout.
+ *
+ * If `wait` is `0` and `leading` is `false`, `func` invocation is deferred
+ * until the next tick, similar to `setTimeout` with a timeout of `0`.
+ *
+ * If `wait` is omitted in an environment with `requestAnimationFrame`, `func`
+ * invocation will be deferred until the next frame is drawn (typically about
+ * 16ms).
+ *
+ * See [David Corbacho's article](https://css-tricks.com/debouncing-throttling-explained-examples/)
+ * for details over the differences between `debounce` and `throttle`.
+ *
+ * @since 0.1.0
+ * @category Function
+ * @param {Function} func The function to debounce.
+ * @param {number} [wait=0]
+ *  The number of milliseconds to delay; if omitted, `requestAnimationFrame` is
+ *  used (if available).
+ * @param {Object} [options={}] The options object.
+ * @param {boolean} [options.leading=false]
+ *  Specify invoking on the leading edge of the timeout.
+ * @param {number} [options.maxWait]
+ *  The maximum time `func` is allowed to be delayed before it's invoked.
+ * @param {boolean} [options.trailing=true]
+ *  Specify invoking on the trailing edge of the timeout.
+ * @returns {Function} Returns the new debounced function.
+ * @example
+ *
+ * // Avoid costly calculations while the window size is in flux.
+ * jQuery(window).on('resize', debounce(calculateLayout, 150))
+ *
+ * // Invoke `sendMail` when clicked, debouncing subsequent calls.
+ * jQuery(element).on('click', debounce(sendMail, 300, {
+ *   'leading': true,
+ *   'trailing': false
+ * }))
+ *
+ * // Ensure `batchLog` is invoked once after 1 second of debounced calls.
+ * const debounced = debounce(batchLog, 250, { 'maxWait': 1000 })
+ * const source = new EventSource('/stream')
+ * jQuery(source).on('message', debounced)
+ *
+ * // Cancel the trailing debounced invocation.
+ * jQuery(window).on('popstate', debounced.cancel)
+ *
+ * // Check for pending invocations.
+ * const status = debounced.pending() ? &quot;Pending...&quot; : &quot;Ready&quot;
+ */</span>
+<span class="token keyword">function</span> <span class="token function">debounce</span><span class="token punctuation">(</span><span class="token parameter">func<span class="token punctuation">,</span> wait<span class="token punctuation">,</span> options</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">let</span> lastArgs<span class="token punctuation">,</span>
+    lastThis<span class="token punctuation">,</span>
+    maxWait<span class="token punctuation">,</span>
+    result<span class="token punctuation">,</span>
+    timerId<span class="token punctuation">,</span>
+    lastCallTime    <span class="token comment">// 最近一次调用debounced的时间</span>
+
+  <span class="token keyword">let</span> lastInvokeTime <span class="token operator">=</span> <span class="token number">0</span>    <span class="token comment">// 最近一次调用func的时间</span>
+  <span class="token keyword">let</span> leading <span class="token operator">=</span> <span class="token boolean">false</span>   <span class="token comment">// 是否是先调用后等待</span>
+  <span class="token keyword">let</span> maxing <span class="token operator">=</span> <span class="token boolean">false</span>    <span class="token comment">// 是否指定maxWait</span>
+  <span class="token keyword">let</span> trailing <span class="token operator">=</span> <span class="token boolean">true</span>   <span class="token comment">// 是否是先等待后调用</span>
+
+  <span class="token comment">// Bypass `requestAnimationFrame` by explicitly setting `wait=0`.</span>
+  <span class="token comment">// wait是null/undefined/false之类，使用requestAnimationFrame</span>
+  <span class="token keyword">const</span> useRAF <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token operator">!</span>wait <span class="token operator">&amp;&amp;</span> wait <span class="token operator">!==</span> <span class="token number">0</span> <span class="token operator">&amp;&amp;</span> <span class="token keyword">typeof</span> root<span class="token punctuation">.</span>requestAnimationFrame <span class="token operator">===</span> <span class="token string">'function'</span><span class="token punctuation">)</span>
+
+  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">typeof</span> func <span class="token operator">!==</span> <span class="token string">'function'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">TypeError</span><span class="token punctuation">(</span><span class="token string">'Expected a function'</span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+  <span class="token comment">// wait转换为数值类型</span>
+  wait <span class="token operator">=</span> <span class="token operator">+</span>wait <span class="token operator">||</span> <span class="token number">0</span>
+  <span class="token comment">// 处理options</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">isObject</span><span class="token punctuation">(</span>options<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    leading <span class="token operator">=</span> <span class="token operator">!</span><span class="token operator">!</span>options<span class="token punctuation">.</span>leading
+    maxing <span class="token operator">=</span> <span class="token string">'maxWait'</span> <span class="token keyword">in</span> options
+    maxWait <span class="token operator">=</span> maxing <span class="token operator">?</span> Math<span class="token punctuation">.</span><span class="token function">max</span><span class="token punctuation">(</span><span class="token operator">+</span>options<span class="token punctuation">.</span>maxWait <span class="token operator">||</span> <span class="token number">0</span><span class="token punctuation">,</span> wait<span class="token punctuation">)</span> <span class="token operator">:</span> maxWait
+    trailing <span class="token operator">=</span> <span class="token string">'trailing'</span> <span class="token keyword">in</span> options <span class="token operator">?</span> <span class="token operator">!</span><span class="token operator">!</span>options<span class="token punctuation">.</span>trailing <span class="token operator">:</span> trailing
+  <span class="token punctuation">}</span>
+
+  <span class="token keyword">function</span> <span class="token function">invokeFunc</span><span class="token punctuation">(</span><span class="token parameter">time</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">const</span> args <span class="token operator">=</span> lastArgs
+    <span class="token keyword">const</span> thisArg <span class="token operator">=</span> lastThis
+
+    lastArgs <span class="token operator">=</span> lastThis <span class="token operator">=</span> <span class="token keyword">undefined</span>
+    lastInvokeTime <span class="token operator">=</span> time
+    result <span class="token operator">=</span> <span class="token function">func</span><span class="token punctuation">.</span><span class="token function">apply</span><span class="token punctuation">(</span>thisArg<span class="token punctuation">,</span> args<span class="token punctuation">)</span>
+    <span class="token keyword">return</span> result
+  <span class="token punctuation">}</span>
+
+  <span class="token comment">// 开启计时器</span>
+  <span class="token keyword">function</span> <span class="token function">startTimer</span><span class="token punctuation">(</span><span class="token parameter">pendingFunc<span class="token punctuation">,</span> wait</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>useRAF<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      root<span class="token punctuation">.</span><span class="token function">cancelAnimationFrame</span><span class="token punctuation">(</span>timerId<span class="token punctuation">)</span>
+      <span class="token keyword">return</span> root<span class="token punctuation">.</span><span class="token function">requestAnimationFrame</span><span class="token punctuation">(</span>pendingFunc<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">return</span> <span class="token function">setTimeout</span><span class="token punctuation">(</span>pendingFunc<span class="token punctuation">,</span> wait<span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token comment">// 停止计时器</span>
+  <span class="token keyword">function</span> <span class="token function">cancelTimer</span><span class="token punctuation">(</span><span class="token parameter">id</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>useRAF<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">return</span> root<span class="token punctuation">.</span><span class="token function">cancelAnimationFrame</span><span class="token punctuation">(</span>id<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+    <span class="token function">clearTimeout</span><span class="token punctuation">(</span>id<span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token keyword">function</span> <span class="token function">leadingEdge</span><span class="token punctuation">(</span><span class="token parameter">time</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">// Reset any `maxWait` timer.</span>
+    lastInvokeTime <span class="token operator">=</span> time
+    <span class="token comment">// Start the timer for the trailing edge.</span>
+    timerId <span class="token operator">=</span> <span class="token function">startTimer</span><span class="token punctuation">(</span>timerExpired<span class="token punctuation">,</span> wait<span class="token punctuation">)</span>
+    <span class="token comment">// Invoke the leading edge.</span>
+    <span class="token keyword">return</span> leading <span class="token operator">?</span> <span class="token function">invokeFunc</span><span class="token punctuation">(</span>time<span class="token punctuation">)</span> <span class="token operator">:</span> result
+  <span class="token punctuation">}</span>
+
+  <span class="token keyword">function</span> <span class="token function">remainingWait</span><span class="token punctuation">(</span><span class="token parameter">time</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">const</span> timeSinceLastCall <span class="token operator">=</span> time <span class="token operator">-</span> lastCallTime
+    <span class="token keyword">const</span> timeSinceLastInvoke <span class="token operator">=</span> time <span class="token operator">-</span> lastInvokeTime
+    <span class="token keyword">const</span> timeWaiting <span class="token operator">=</span> wait <span class="token operator">-</span> timeSinceLastCall
+
+    <span class="token keyword">return</span> maxing
+      <span class="token operator">?</span> Math<span class="token punctuation">.</span><span class="token function">min</span><span class="token punctuation">(</span>timeWaiting<span class="token punctuation">,</span> maxWait <span class="token operator">-</span> timeSinceLastInvoke<span class="token punctuation">)</span>
+      <span class="token operator">:</span> timeWaiting
+  <span class="token punctuation">}</span>
+
+  <span class="token comment">// 判断是否可以调用func</span>
+  <span class="token keyword">function</span> <span class="token function">shouldInvoke</span><span class="token punctuation">(</span><span class="token parameter">time</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">const</span> timeSinceLastCall <span class="token operator">=</span> time <span class="token operator">-</span> lastCallTime
+    <span class="token keyword">const</span> timeSinceLastInvoke <span class="token operator">=</span> time <span class="token operator">-</span> lastInvokeTime
+
+    <span class="token comment">// 1. 第一次调用</span>
+    <span class="token comment">// 2. 到达等待时间</span>
+    <span class="token comment">// 3. 到达最大等待调用时间</span>
+    <span class="token comment">// Either this is the first call, activity has stopped and we're at the</span>
+    <span class="token comment">// trailing edge, the system time has gone backwards and we're treating</span>
+    <span class="token comment">// it as the trailing edge, or we've hit the `maxWait` limit.</span>
+    <span class="token keyword">return</span> <span class="token punctuation">(</span>lastCallTime <span class="token operator">===</span> <span class="token keyword">undefined</span> <span class="token operator">||</span> <span class="token punctuation">(</span>timeSinceLastCall <span class="token operator">&gt;=</span> wait<span class="token punctuation">)</span> <span class="token operator">||</span>
+      <span class="token punctuation">(</span>timeSinceLastCall <span class="token operator">&lt;</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token operator">||</span> <span class="token punctuation">(</span>maxing <span class="token operator">&amp;&amp;</span> timeSinceLastInvoke <span class="token operator">&gt;=</span> maxWait<span class="token punctuation">)</span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token keyword">function</span> <span class="token function">timerExpired</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">const</span> time <span class="token operator">=</span> Date<span class="token punctuation">.</span><span class="token function">now</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">shouldInvoke</span><span class="token punctuation">(</span>time<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">return</span> <span class="token function">trailingEdge</span><span class="token punctuation">(</span>time<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+    <span class="token comment">// Restart the timer.</span>
+    timerId <span class="token operator">=</span> <span class="token function">startTimer</span><span class="token punctuation">(</span>timerExpired<span class="token punctuation">,</span> <span class="token function">remainingWait</span><span class="token punctuation">(</span>time<span class="token punctuation">)</span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token keyword">function</span> <span class="token function">trailingEdge</span><span class="token punctuation">(</span><span class="token parameter">time</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    timerId <span class="token operator">=</span> <span class="token keyword">undefined</span>
+
+    <span class="token comment">// Only invoke if we have `lastArgs` which means `func` has been</span>
+    <span class="token comment">// debounced at least once.</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>trailing <span class="token operator">&amp;&amp;</span> lastArgs<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">return</span> <span class="token function">invokeFunc</span><span class="token punctuation">(</span>time<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+    lastArgs <span class="token operator">=</span> lastThis <span class="token operator">=</span> <span class="token keyword">undefined</span>
+    <span class="token keyword">return</span> result
+  <span class="token punctuation">}</span>
+
+  <span class="token keyword">function</span> <span class="token function">cancel</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>timerId <span class="token operator">!==</span> <span class="token keyword">undefined</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token function">cancelTimer</span><span class="token punctuation">(</span>timerId<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+    lastInvokeTime <span class="token operator">=</span> <span class="token number">0</span>
+    lastArgs <span class="token operator">=</span> lastCallTime <span class="token operator">=</span> lastThis <span class="token operator">=</span> timerId <span class="token operator">=</span> <span class="token keyword">undefined</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token keyword">function</span> <span class="token function">flush</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> timerId <span class="token operator">===</span> <span class="token keyword">undefined</span> <span class="token operator">?</span> result <span class="token operator">:</span> <span class="token function">trailingEdge</span><span class="token punctuation">(</span>Date<span class="token punctuation">.</span><span class="token function">now</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token keyword">function</span> <span class="token function">pending</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> timerId <span class="token operator">!==</span> <span class="token keyword">undefined</span>
+  <span class="token punctuation">}</span>
+
+
+  <span class="token comment">// 最终返回的debounced函数</span>
+  <span class="token keyword">function</span> <span class="token function">debounced</span><span class="token punctuation">(</span><span class="token parameter"><span class="token operator">...</span>args</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">const</span> time <span class="token operator">=</span> Date<span class="token punctuation">.</span><span class="token function">now</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token keyword">const</span> isInvoking <span class="token operator">=</span> <span class="token function">shouldInvoke</span><span class="token punctuation">(</span>time<span class="token punctuation">)</span>   <span class="token comment">// 是否能调用func</span>
+
+    lastArgs <span class="token operator">=</span> args <span class="token comment">// 保存最近的参数</span>
+    lastThis <span class="token operator">=</span> <span class="token keyword">this</span> <span class="token comment">// 保存最近的this</span>
+    lastCallTime <span class="token operator">=</span> time <span class="token comment">// 保存最近的调用时间</span>
+
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>isInvoking<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>timerId <span class="token operator">===</span> <span class="token keyword">undefined</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token function">leadingEdge</span><span class="token punctuation">(</span>lastCallTime<span class="token punctuation">)</span>
+      <span class="token punctuation">}</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>maxing<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment">// Handle invocations in a tight loop.</span>
+        timerId <span class="token operator">=</span> <span class="token function">startTimer</span><span class="token punctuation">(</span>timerExpired<span class="token punctuation">,</span> wait<span class="token punctuation">)</span>
+        <span class="token keyword">return</span> <span class="token function">invokeFunc</span><span class="token punctuation">(</span>lastCallTime<span class="token punctuation">)</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>timerId <span class="token operator">===</span> <span class="token keyword">undefined</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      timerId <span class="token operator">=</span> <span class="token function">startTimer</span><span class="token punctuation">(</span>timerExpired<span class="token punctuation">,</span> wait<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">return</span> result
+  <span class="token punctuation">}</span>
+  debounced<span class="token punctuation">.</span>cancel <span class="token operator">=</span> cancel
+  debounced<span class="token punctuation">.</span>flush <span class="token operator">=</span> flush
+  debounced<span class="token punctuation">.</span>pending <span class="token operator">=</span> pending
+  <span class="token keyword">return</span> debounced
+<span class="token punctuation">}</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> debounce
+
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br><span class="line-number">30</span><br><span class="line-number">31</span><br><span class="line-number">32</span><br><span class="line-number">33</span><br><span class="line-number">34</span><br><span class="line-number">35</span><br><span class="line-number">36</span><br><span class="line-number">37</span><br><span class="line-number">38</span><br><span class="line-number">39</span><br><span class="line-number">40</span><br><span class="line-number">41</span><br><span class="line-number">42</span><br><span class="line-number">43</span><br><span class="line-number">44</span><br><span class="line-number">45</span><br><span class="line-number">46</span><br><span class="line-number">47</span><br><span class="line-number">48</span><br><span class="line-number">49</span><br><span class="line-number">50</span><br><span class="line-number">51</span><br><span class="line-number">52</span><br><span class="line-number">53</span><br><span class="line-number">54</span><br><span class="line-number">55</span><br><span class="line-number">56</span><br><span class="line-number">57</span><br><span class="line-number">58</span><br><span class="line-number">59</span><br><span class="line-number">60</span><br><span class="line-number">61</span><br><span class="line-number">62</span><br><span class="line-number">63</span><br><span class="line-number">64</span><br><span class="line-number">65</span><br><span class="line-number">66</span><br><span class="line-number">67</span><br><span class="line-number">68</span><br><span class="line-number">69</span><br><span class="line-number">70</span><br><span class="line-number">71</span><br><span class="line-number">72</span><br><span class="line-number">73</span><br><span class="line-number">74</span><br><span class="line-number">75</span><br><span class="line-number">76</span><br><span class="line-number">77</span><br><span class="line-number">78</span><br><span class="line-number">79</span><br><span class="line-number">80</span><br><span class="line-number">81</span><br><span class="line-number">82</span><br><span class="line-number">83</span><br><span class="line-number">84</span><br><span class="line-number">85</span><br><span class="line-number">86</span><br><span class="line-number">87</span><br><span class="line-number">88</span><br><span class="line-number">89</span><br><span class="line-number">90</span><br><span class="line-number">91</span><br><span class="line-number">92</span><br><span class="line-number">93</span><br><span class="line-number">94</span><br><span class="line-number">95</span><br><span class="line-number">96</span><br><span class="line-number">97</span><br><span class="line-number">98</span><br><span class="line-number">99</span><br><span class="line-number">100</span><br><span class="line-number">101</span><br><span class="line-number">102</span><br><span class="line-number">103</span><br><span class="line-number">104</span><br><span class="line-number">105</span><br><span class="line-number">106</span><br><span class="line-number">107</span><br><span class="line-number">108</span><br><span class="line-number">109</span><br><span class="line-number">110</span><br><span class="line-number">111</span><br><span class="line-number">112</span><br><span class="line-number">113</span><br><span class="line-number">114</span><br><span class="line-number">115</span><br><span class="line-number">116</span><br><span class="line-number">117</span><br><span class="line-number">118</span><br><span class="line-number">119</span><br><span class="line-number">120</span><br><span class="line-number">121</span><br><span class="line-number">122</span><br><span class="line-number">123</span><br><span class="line-number">124</span><br><span class="line-number">125</span><br><span class="line-number">126</span><br><span class="line-number">127</span><br><span class="line-number">128</span><br><span class="line-number">129</span><br><span class="line-number">130</span><br><span class="line-number">131</span><br><span class="line-number">132</span><br><span class="line-number">133</span><br><span class="line-number">134</span><br><span class="line-number">135</span><br><span class="line-number">136</span><br><span class="line-number">137</span><br><span class="line-number">138</span><br><span class="line-number">139</span><br><span class="line-number">140</span><br><span class="line-number">141</span><br><span class="line-number">142</span><br><span class="line-number">143</span><br><span class="line-number">144</span><br><span class="line-number">145</span><br><span class="line-number">146</span><br><span class="line-number">147</span><br><span class="line-number">148</span><br><span class="line-number">149</span><br><span class="line-number">150</span><br><span class="line-number">151</span><br><span class="line-number">152</span><br><span class="line-number">153</span><br><span class="line-number">154</span><br><span class="line-number">155</span><br><span class="line-number">156</span><br><span class="line-number">157</span><br><span class="line-number">158</span><br><span class="line-number">159</span><br><span class="line-number">160</span><br><span class="line-number">161</span><br><span class="line-number">162</span><br><span class="line-number">163</span><br><span class="line-number">164</span><br><span class="line-number">165</span><br><span class="line-number">166</span><br><span class="line-number">167</span><br><span class="line-number">168</span><br><span class="line-number">169</span><br><span class="line-number">170</span><br><span class="line-number">171</span><br><span class="line-number">172</span><br><span class="line-number">173</span><br><span class="line-number">174</span><br><span class="line-number">175</span><br><span class="line-number">176</span><br><span class="line-number">177</span><br><span class="line-number">178</span><br><span class="line-number">179</span><br><span class="line-number">180</span><br><span class="line-number">181</span><br><span class="line-number">182</span><br><span class="line-number">183</span><br><span class="line-number">184</span><br><span class="line-number">185</span><br><span class="line-number">186</span><br><span class="line-number">187</span><br><span class="line-number">188</span><br><span class="line-number">189</span><br><span class="line-number">190</span><br><span class="line-number">191</span><br><span class="line-number">192</span><br><span class="line-number">193</span><br><span class="line-number">194</span><br><span class="line-number">195</span><br><span class="line-number">196</span><br><span class="line-number">197</span><br><span class="line-number">198</span><br><span class="line-number">199</span><br><span class="line-number">200</span><br><span class="line-number">201</span><br><span class="line-number">202</span><br><span class="line-number">203</span><br><span class="line-number">204</span><br><span class="line-number">205</span><br><span class="line-number">206</span><br><span class="line-number">207</span><br><span class="line-number">208</span><br><span class="line-number">209</span><br><span class="line-number">210</span><br><span class="line-number">211</span><br><span class="line-number">212</span><br><span class="line-number">213</span><br><span class="line-number">214</span><br><span class="line-number">215</span><br><span class="line-number">216</span><br><span class="line-number">217</span><br><span class="line-number">218</span><br><span class="line-number">219</span><br><span class="line-number">220</span><br><span class="line-number">221</span><br><span class="line-number">222</span><br><span class="line-number">223</span><br><span class="line-number">224</span><br><span class="line-number">225</span><br></div></div></div> <footer class="page-edit"><!----> <div class="last-updated"><span class="prefix">更新时间:</span> <span class="time">2020年9月9日 14:43</span></div></footer> <!----> </main></div><div class="global-ui"></div></div>
+    <script src="/blog/assets/js/app.ad8c6a18.js" defer></script><script src="/blog/assets/js/3.ce09a418.js" defer></script><script src="/blog/assets/js/47.667eef97.js" defer></script>
+  </body>
+</html>
