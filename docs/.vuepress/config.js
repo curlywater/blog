@@ -81,7 +81,7 @@ const front2EndSidebar = [
   },
   {
     title: "源码解读",
-    children: ["/前端技术/源码解读/探索Typography.js.md"],
+    children: ["/前端技术/源码解读/探索Typography.js.md", "/前端技术/源码解读/gatsby-theme-novela.md"],
   },
   {
     title: "项目记录",
@@ -110,7 +110,7 @@ const exploreSidebar = [
   },
   {
     title: "收藏夹",
-    children: ["/探索/收藏夹/好用的开发工具.md"],
+    children: ["/探索/收藏夹/好用的开发工具.md", "/探索/收藏夹/Linux命令.md"],
   },
 ];
 

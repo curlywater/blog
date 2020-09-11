@@ -2264,7 +2264,7 @@ let promise = new Promise(function (resolve, reject) {
 
 `promise`对象的状态一旦更改变不可再更改，处于`resolved/rejected`状态的`promise`被称为`settled`
 
-###消费者，then,catch,finally
+### 消费者，then,catch,finally
 
 执行器类似于生产者，`promise`对象为生产者和消费者提供连接，通过`then/catch/finally`来注册消费者的监听，以便消费者及时获得生产者产出的`value/error`
 
