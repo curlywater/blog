@@ -81,7 +81,7 @@ const front2EndSidebar = [
   },
   {
     title: "源码解读",
-    children: ["/前端技术/源码解读/探索Typography.js.md", "/前端技术/源码解读/gatsby-theme-novela.md"],
+    children: ["/前端技术/源码解读/探索Typography.js.md"],
   },
   {
     title: "项目记录",
