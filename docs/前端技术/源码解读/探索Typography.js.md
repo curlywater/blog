@@ -1,6 +1,6 @@
 ---
 title: 探索Typography.js
-permalink: /f2e/source/typography.js
+permalink: /f2e/source/typography
 ---
 # 探索 Typography.js
 
