@@ -100,6 +100,7 @@ const algorithmSidebar = [
   "/算法/排序/",
   "/算法/二分查找/",
   "/算法/散列表/",
+  "/算法/算法思想/",
 ];
 
 const exploreSidebar = [
