@@ -12,7 +12,7 @@ permalink: /algo/sort
     - 时间复杂度的系数、常数 、低阶（实际应用中，数据规模比较小，同阶比较需要考虑）
     - 比较和移动的次数
 - 内存消耗（原地排序：空间复杂度是$O(1)$的排序）
-- 稳定性：经过一次排序之后，相等元素之间原有先后顺序不变，应用场景：先按下单时间排序，再按订单金额排序
+- 稳定性：经过一次排序之后，相等元素之间原有先后顺序不变，应用场景：多因素排序（先按下单时间排序，再按订单金额排序）
 
 ## 前导说明
 
@@ -77,9 +77,9 @@ class Bubble extends Sort {
 
 ### 分析
 
-稳定排序
+稳定性：稳定排序
 
-原地排序
+空间复杂度：原地排序
 
 最好情况时间复杂度：正序，$O(n)$
 
@@ -143,9 +143,9 @@ class Selection extends Sort {
 
 ### 分析
 
-非稳定排序，和最小值交换位置会打乱元素原有先后顺序。
+稳定性：非稳定排序，和最小值交换位置会打乱元素原有先后顺序。
 
-原地排序
+空间复杂度：原地排序
 
 最好时间复杂度：$O(n^2)$
 
@@ -153,7 +153,7 @@ class Selection extends Sort {
 
 平均时间复杂度：$O(n^2)$
 
-选择排序的效率和数组的初始状态无关，不管是有序数组还是全相等数组都需要进行N^2级的比较，选择排序的效率更加依赖于数组规模。
+选择排序的效率和数组的初始状态无关，不管是有序数组还是全相等数组都需要进行$N^2$级的比较，选择排序的效率更加依赖于数组规模。
 
 选择排序的交换次数和数组大小是线性关系。选择排序最多交换N次，在大多数情况下选择排序比冒泡排序效率好一些。
 
@@ -189,9 +189,9 @@ function insertionSort(array) {
 
 ### 分析
 
-稳定排序
+稳定性：稳定排序
 
-原地排序
+空间复杂度：原地排序
 
 最好时间复杂度：$O(n)$
 
@@ -378,11 +378,11 @@ class IterationMerge extends Sort {
 
 ### 分析
 
-稳定算法
+稳定性：稳定算法
 
-空间复杂度：$O(n)$
+空间复杂度：$O(n)$，尽管每次合并操作都需要申请额外的内存空间，但在合并完成之后，临时开辟的内存空间就被释放掉了。在任意时刻，CPU 只会有一个函数在执行，也就只会有一个临时的内存空间在使用。临时内存空间最大也不会超过 n 个数据的大小，所以空间复杂度是 $O(n)$。
 
-平均复杂度：$O(NlogN)$
+平均复杂度：$O(nlogn)$
 
 **如何分析递归代码的时间复杂度？**
 
@@ -701,6 +701,45 @@ class HeapSort extends Sort {
 
 比较排序部分结束了，接下来是根据数据特征分布数据 -> 局部排序 -> 再合并的三种排序算法。
 
+
+
+## 桶排序
+
+通过逻辑映射（需要关联桶的顺序）把数据分布到不同的的桶中，在各个桶内部进行快排，再把桶数据拼装起来。
+
+
+
+``` javascript
+class BucketSort extends Sort {
+  static sort(array, bucketSize = 5) {
+    let min = array[0];
+    let max = array[0];
+
+    array.forEach((elem) => {
+      min = elem < min ? elem : min;
+      max = elem > max ? elem : max;
+    });
+
+    const bucketCount = Math.floor((max - min) / bucketSize) + 1;
+    const buckets = new Array(bucketCount).fill().map(u => ([]));
+
+    array.forEach((elem) => {
+      buckets[Math.floor((elem - min) / bucketSize)].push(elem);
+    });
+    array.length = 0;
+    buckets.forEach((bucket) => array.push(...bucket.sort((a, b) => a - b)));
+    return array;
+  }
+}
+```
+
+### 分析
+
+假设有n个数据，划分到m个桶中，每个桶中有n / m个数据，每个桶中进行快排。那么m个桶的时间复杂度是$O(m * klogk)$，其中k是n / m。带入得到$O(nlogn/m)$。当m接近n时，时间复杂度接近$O(n)$。桶排序的效率和桶的划分密切相关。
+
+桶排序比较适合用在外部排序中。数据存储在外部磁盘中，数据量比较大，内存有限，无法将数据全部加载到内存中。
+
+
 ## 计数排序
 
 ![img](~@images/countSort.png)
@@ -731,45 +770,18 @@ class CountingSort extends Sort {
 }
 ```
 
-数组元素与计数数组索引映射
+计数排序是一种特殊的桶排序。时间复杂度为$O(n)$
 
-
-
-## 桶排序
-
-通过逻辑映射（需要关联桶的顺序）把数据分布到不同的的桶中，各个桶内部排序，在把桶内数据拼装起来
-
-``` javascript
-class BucketSort extends Sort {
-  static sort(array, bucketSize = 5) {
-    let min = array[0];
-    let max = array[0];
-
-    array.forEach((elem) => {
-      min = elem < min ? elem : min;
-      max = elem > max ? elem : max;
-    });
-
-    const bucketCount = Math.floor((max - min) / bucketSize) + 1;
-    const buckets = new Array(bucketCount).fill().map(u => ([]));
-
-    array.forEach((elem) => {
-      buckets[Math.floor((elem - min) / bucketSize)].push(elem);
-    });
-    array.length = 0;
-    buckets.forEach((bucket) => array.push(...bucket.sort((a, b) => a - b)));
-    return array;
-  }
-}
-```
-
-数组元素通过转换逻辑与桶映射
-
-
+适合数据范围不大的情况，如果数据范围 k 比要排序的数据 n 大很多，就不适合用计数排序了。
+同时计数排序只能给非负整数排序。
 
 ## 基数排序
 
-是基于整数的排序，利用整数位数带有顺序信息的特征
+按照每位排序，而且位之间有递进的关系。
+
+每一位的数据范围不能太大，可以用线性排序算法来排序，可以达到$O(n)$的时间复杂度。
+
+基于整数的排序，利用整数位数带有顺序信息的特征
 
 数组整数元素通过位数映射到对应组
 
@@ -823,3 +835,9 @@ class RadixSort extends Sort {
 [图解排序算法(二)之希尔排序](https://www.cnblogs.com/chengxiao/p/6104371.html)
 
 [图解排序算法(四)之归并排序](https://www.cnblogs.com/chengxiao/p/6194356.html)
+
+[排序（上）：为什么插入排序比冒泡排序更受欢迎？](https://time.geekbang.org/column/article/41802)
+
+[排序（下）：如何用快排思想在O(n)内查找第K大元素？](https://time.geekbang.org/column/article/41913)
+
+[线性排序：如何根据年龄给100万用户数据排序？](https://time.geekbang.org/column/article/42038)

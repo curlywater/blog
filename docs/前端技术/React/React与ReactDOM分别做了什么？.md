@@ -136,369 +136,60 @@ console.log(component.type());
 
 ```
 
+就是说，React通过`React.createElement`的嵌套调用描述了React元素间的关系，也就是我们惯称的虚拟DOM。
+
 
 ## ReactDOM拿到React提供的物料后做了什么？
 
-继续深入`render`，进入`legacyRenderSubtreeIntoContainer`函数。
+ReactDOM接收到的是React元素树。
 
-`legacyRenderSubtreeIntoContainer`中根据`container._reactRootContainer`判断在指定DOM结点下是否已挂载有React应用，如果未曾挂载那么进入初始化流程。
+ReactDOM中的操作分为reconciler和commit两个阶段。render负责React元素 -> 组件实例/真实的DOM。commit部分负责将所有修改应用到DOM树上。
 
-::: details `legacyRenderSubtreeIntoContainer`整体代码（适当简化）
+ReactDOM从React元素树的根开始，为React元素产生对应的FiberNode。FiberNode是一个包含多向指针的数据结构，包括`return`，`child`，`sibling`三个指针，分别对应父结点，第一个子结点，右边的兄弟结点。从而形成了Fiber链表。
+实现Fiber链表的目的在于能中断、继续。
+
 ``` js
-export type RootType = {
-  render(children: ReactNodeList): void,
-  unmount(): void,
-  _internalRoot: FiberRoot,
-  ...
-};
+Fiber = {
+    // 标识 fiber 类型的标签，详情参看下述 WorkTag
+    tag: WorkTag,
 
-export type Container =
-  | (Element & {_reactRootContainer?: RootType, ...})
-  | (Document & {_reactRootContainer?: RootType, ...});
+    // 指向父节点
+    return: Fiber | null,
 
-import {
-  updateContainer,
-  unbatchedUpdates,
-  getPublicRootInstance
-} from 'react-reconciler/src/ReactFiberReconciler';
+    // 指向子节点
+    child: Fiber | null,
 
-function legacyRenderSubtreeIntoContainer(
-  parentComponent: ?React$Component<any, any>,
-  children: ReactNodeList,
-  container: Container,
-  forceHydrate: boolean,
-  callback: ?Function,
-) {
-  // TODO: Without `any` type, Flow says "Property cannot be accessed on any
-  // member of intersection type." Whyyyyyy.
-  let root: RootType = (container._reactRootContainer: any);
-  let fiberRoot;
-  if (!root) {
-    // Initial mount
-    root = container._reactRootContainer = legacyCreateRootFromDOMContainer(
-      container,
-      forceHydrate,
-    );
-    fiberRoot = root._internalRoot;
-    if (typeof callback === 'function') {
-      const originalCallback = callback;
-      callback = function() {
-        const instance = getPublicRootInstance(fiberRoot);
-        originalCallback.call(instance);
-      };
-    }
-    // Initial mount should not be batched.
-    unbatchedUpdates(() => {
-      updateContainer(children, fiberRoot, parentComponent, callback);
-    });
-  } else {
-    fiberRoot = root._internalRoot;
-    if (typeof callback === 'function') {
-      const originalCallback = callback;
-      callback = function() {
-        const instance = getPublicRootInstance(fiberRoot);
-        originalCallback.call(instance);
-      };
-    }
-    // Update
-    updateContainer(children, fiberRoot, parentComponent, callback);
-  }
-  return getPublicRootInstance(fiberRoot);
-}
+    // 指向兄弟节点
+    sibling: Fiber | null,
 
-```
-:::
+    // 在开始执行时设置 props 值
+    pendingProps: any,
 
+    // 在结束时设置的 props 值
+    memoizedProps: any,
 
-初始化流程主要做了两件事：
-1. 初始化Root，生成FiberRoot
-2. 进入Fiber流程
-    - reconciliation阶段：React元素树 -> Fiber树
-    - commit阶段：Fiber树 -> DOM
+    // 当前 state
+    memoizedState: any,
 
-### 初始化Root
+    // Effect 类型，详情查看以下 effectTag
+    effectTag: SideEffectTag,
 
+    // effect 节点指针，指向下一个 effect
+    nextEffect: Fiber | null,
 
-初始化Root的详细步骤
-``` js
-import {
-  createContainer,
-} from 'react-reconciler/src/ReactFiberReconciler';
+    // effect list 是单向链表，第一个 effect
+    firstEffect: Fiber | null,
 
-container._reactRootContainer = legacyCreateRootFromDOMContainer(
-    container,
-    forceHydrate,
-);
+    // effect list 是单向链表，最后一个 effect
+    lastEffect: Fiber | null,
 
-function legacyCreateRootFromDOMContainer(
-  container: Container,
-  forceHydrate: boolean,
-): RootType {
-  return createLegacyRoot(
-    container,
-    shouldHydrate
-      ? {
-          hydrate: true,
-        }
-      : undefined,
-  );
-}
-
-
-export function createLegacyRoot(
-  container: Container,
-  options?: RootOptions,
-): RootType {
-  return new ReactDOMBlockingRoot(container, LegacyRoot, options); // 实例化Root对象
-}
-
-function ReactDOMBlockingRoot(
-  container: Container,
-  tag: RootTag,
-  options: void | RootOptions,
-) {
-  this._internalRoot = createRootImpl(container, tag, options); // 创建FiberRoot
-}
-
-```
-
-容器DOM节点（后文称之为container ）初始是个`Element | Document`类型，在经过初始化操作之后附加上`_reactRootContainer`属性，`_reactRootContainer`保存的是一个`RootType`类型的对象（后文称之为Root对象）。最终container 符合下面描述的`Container`类型。
-
-``` ts
-type Container =
-  | (Element & {_reactRootContainer: RootType})
-  | (Document & {_reactRootContainer: RootType});
-
-type RootType = {
-  render(children: ReactNodeList): void,
-  unmount(): void,
-  _internalRoot: FiberRoot,
+    // work 的过期时间，可用于标识一个 work 优先级顺序
+    expirationTime: ExpirationTime,
 };
 ```
 
-不难发现，最根本的操作还是创建FiberRoot。FiberRoot 可以通过`container._reactRootContainer._internalRoot`访问到。
 
-我们先来确定FiberRoot是什么。
-
-``` js
-// （代码适当简化）
-// tag = LegacyRoot
-export function createFiberRoot(
-  containerInfo: any,
-  tag: RootTag,
-  hydrate: boolean,
-  hydrationCallbacks: null | SuspenseHydrationCallbacks,
-): FiberRoot {
-  const root: FiberRoot = (new FiberRootNode(containerInfo, tag, hydrate): any);
-  if (enableSuspenseCallback) {
-    root.hydrationCallbacks = hydrationCallbacks;
-  }
-
-  // Cyclic construction. This cheats the type system right now because
-  // stateNode is any.
-  const uninitializedFiber = createHostRootFiber(tag); // 创建一个tag为HostRoot的FiberNode
-  root.current = uninitializedFiber;
-  uninitializedFiber.stateNode = root;
-
-  initializeUpdateQueue(uninitializedFiber);
-
-  return root;
-}
-
-function FiberRootNode(containerInfo, tag, hydrate) {
-  this.tag = tag;
-  this.containerInfo = containerInfo;
-  this.hydrate = hydrate;
-  this.current = null;
-}
-
-function initializeUpdateQueue<State>(fiber: Fiber): void {
-  const queue: UpdateQueue<State> = {
-    baseState: fiber.memoizedState,
-    firstBaseUpdate: null,
-    lastBaseUpdate: null,
-    shared: {
-      pending: null,
-    },
-    effects: null,
-  };
-  fiber.updateQueue = queue;
-}
-
-```
-
-`createHostRootFiber`这一步骤创建了一个`tag`为`HostRoot`的FiberNode，`FiberRoot.current`引用FiberNode，`FiberNode.stateNode`引用FiberRoot，形成一个环结构。
-
-同时，`FiberNode.updateQueue`绑定一个更新队列。
-
-所以，FiberRoot的结构可以描述为
-
-``` js
-FiberRoot = {
-  tag: LegacyRoot,
-  containerInfo: Container,
-  current: {
-    tag: HostRoot,
-    stateNode: FiberRoot,
-    key: null,
-    pendingProps: null,
-    mode: NoMode,
-    sibling: null
-    child: null,
-    return: null,
-    lanes: NoLanes,
-    updateQueue: {
-      baseState: null,
-      firstBaseUpdate: null,
-      lastBaseUpdate: null,
-      shared: {
-        pending: null,
-      },
-      effects: null,
-    }
-  }
-}
-```
-
-### 进入Fiber流程
-
-这部分逻辑完全封装在`react-reconciler`包中，在这我只是简单介绍初始化阶段协调器做了什么。Fiber架构的具体介绍另写一篇文章。
-
-现在我们有的物料是一个FiberRoot对象，还有根React Element对象。而下面代码中的`fiberRoot`和`children`就分别对应两者。
-
-``` js
-fiberRoot = root._internalRoot;
-if (typeof callback === 'function') {
-  const originalCallback = callback;
-  callback = function() {
-    const instance = getPublicRootInstance(fiberRoot);
-    originalCallback.call(instance);
-  };
-}
-// Initial mount should not be batched.
-unbatchedUpdates(() => {
-  updateContainer(children, fiberRoot, parentComponent, callback);
-});
-
-```
-
-`unbatchedUpdates`：作用在于进行非批量更新操作
-
-``` js
-// const NoContext = /*             */ 0b0000000;
-// const BatchedContext = /*               */ 0b0000001;
-// const LegacyUnbatchedContext = /*       */ 0b0001000;
-let executionContext: ExecutionContext = NoContext;
-
-export function unbatchedUpdates<A, R>(fn: (a: A) => R, a: A): R {
-  const prevExecutionContext = executionContext;
-  executionContext &= ~BatchedContext; 
-  executionContext |= LegacyUnbatchedContext; // executionContext & -0b1111110 | 0b0001000
-  try {
-    return fn(a);
-  } finally {
-    executionContext = prevExecutionContext;
-    if (executionContext === NoContext) {
-      // Flush the immediate callbacks that were scheduled during this batch
-      resetRenderTimer();
-      flushSyncCallbackQueue();
-    }
-  }
-}
-
-export function batchedUpdates<A, R>(fn: A => R, a: A): R {
-  const prevExecutionContext = executionContext;
-  executionContext |= BatchedContext; // executionContext | 0b0000001
-  try {
-    return fn(a);
-  } finally {
-    executionContext = prevExecutionContext;
-    if (executionContext === NoContext) {
-      // Flush the immediate callbacks that were scheduled during this batch
-      resetRenderTimer();
-      flushSyncCallbackQueue();
-    }
-  }
-}
-```
-
-
-核心部分，`updateContainer`
-``` js
-export function updateContainer(
-  element: ReactNodeList,
-  container: OpaqueRoot,
-  parentComponent: ?React$Component<any, any>,
-  callback: ?Function,
-): Lane {
-  const current = container.current; //FiberNode
-  const eventTime = requestEventTime();
-  const lane = requestUpdateLane(current);
-
-  if (enableSchedulingProfiler) {
-    markRenderScheduled(lane);
-  }
-
-  const context = getContextForSubtree(parentComponent);
-  if (container.context === null) {
-    container.context = context;
-  } else {
-    container.pendingContext = context;
-  }
-
-  const update = createUpdate(eventTime, lane);
-  // Caution: React DevTools currently depends on this property
-  // being called "element".
-  update.payload = {element};
-
-  callback = callback === undefined ? null : callback;
-  if (callback !== null) {
-    update.callback = callback;
-  }
-
-  enqueueUpdate(current, update); // 入队更新队列
-  scheduleUpdateOnFiber(current, lane, eventTime);
-
-  return lane;
-}
-
-function createUpdate(eventTime: number, lane: Lane): Update<*> {
-  const update: Update<*> = {
-    eventTime,
-    lane,
-
-    tag: UpdateState,
-    payload: null,
-    callback: null,
-
-    next: null,
-  };
-  return update;
-}
-
-function enqueueUpdate<State>(fiber: Fiber, update: Update<State>) {
-  const updateQueue = fiber.updateQueue;
-  if (updateQueue === null) {
-    // Only occurs if the fiber has been unmounted.
-    return;
-  }
-
-  const sharedQueue: SharedQueue<State> = (updateQueue: any).shared;
-  const pending = sharedQueue.pending;
-  if (pending === null) {
-    // This is the first update. Create a circular list.
-    update.next = update;
-  } else {
-    update.next = pending.next;
-    pending.next = update;
-  }
-  sharedQueue.pending = update;
-}
-
-```
-
-`enqueueUpdate(current, update);` // 把update插入到更新队列，在第一次更新时生成的是一个环
-`scheduleUpdateOnFiber(current, lane, eventTime);` // 通过Fiber进行更新调度
+https://zhuanlan.zhihu.com/p/179934120
 
 ## ReactDOM怎么知道需要进行更新？
 
@@ -549,7 +240,7 @@ const React = {
 > react包仅仅是让你使用 React 的特性，但是它完全不知道这些特性是如何实现的。而渲染器包(react-dom、react-native等)提供了React特性的实现以及平台特定的逻辑。
 
 
-`React.Component/hooks/Context/Refs/setState/事件处理`...这些都是React 的特性，可以简单地认知为面向React使用者的接口。而这些特性的具体实现部分是由ReactDOM来负责的。
+`React.Component/hooks/Context/Refs/setState/事件处理`...这些都是React 的特性，可以简单地认知为面向React使用者的接口，负责描述结构和逻辑。而特性的具体实现部分是由渲染器（ReactDOM/React Native）来负责的。
 
 在初始化阶段，`React.createElement`返回一颗React元素树，交给ReactDOM做Fiber树构建。
 
