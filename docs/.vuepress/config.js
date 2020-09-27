@@ -4,9 +4,7 @@ const front2EndSidebar = [
   "/前端技术/",
   {
     title: "HTML",
-    children: [
-      "/前端技术/HTML/HTML的基础标签.md"
-    ]
+    children: ["/前端技术/HTML/HTML的基础标签.md"],
   },
   {
     title: "JavaScript",
@@ -59,13 +57,33 @@ const front2EndSidebar = [
   {
     title: "React",
     children: [
-      "/前端技术/React/React知识体系.md",
-      "/前端技术/React/React组件的生命周期.md",
-      "/前端技术/React/React Hook使用介绍.md",
-      "/前端技术/React/React与ReactDOM分别做了什么？.md",
-      "/前端技术/React/少量组件应用方案.md",
-      "/前端技术/React/React-Router.md",
-      "/前端技术/React/Reach-Router.md"
+      {
+        title: "React使用",
+        children: [
+          "/前端技术/React/React使用/React知识体系.md",
+          "/前端技术/React/React使用/React组件的生命周期.md",
+          "/前端技术/React/React使用/React Hook使用介绍.md",
+        ],
+      },
+      {
+        title: "React原理",
+        children: [
+          "/前端技术/React/React原理/React与ReactDOM分别做了什么？.md",
+        ],
+      },
+      {
+        title: "Router相关",
+        children: [
+          "/前端技术/React/Router相关/React-Router.md",
+          "/前端技术/React/Router相关/Reach-Router.md",
+        ],
+      },
+      {
+        title: "React应用",
+        children: [
+          "/前端技术/React/React应用/少量组件应用方案.md"
+        ],
+      },
     ],
   },
   {

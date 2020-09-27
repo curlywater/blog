@@ -18,6 +18,18 @@ permalink: /algo/thinking
 
 难点：将要解决的问题抽象成贪心算法模型。
 
+**练习**
+
+[分发饼干](https://leetcode-cn.com/problems/assign-cookies/)
+
+[最大子序和](https://leetcode-cn.com/problems/maximum-subarray/)
+
+[加油站](https://leetcode-cn.com/problems/gas-station/)
+
+[根据身高重建队列](https://leetcode-cn.com/problems/queue-reconstruction-by-height/)
+
+[用最少数量的箭引爆气球](https://leetcode-cn.com/problems/minimum-number-of-arrows-to-burst-balloons/)
+
 
 ## 分治
 
@@ -32,6 +44,13 @@ permalink: /algo/thinking
 4. 可以将子问题合并成原问题，而这个合并操作的复杂度不能太高，否则就起不到减小算法总体复杂度的效果了。
 
 > 创新并非离我们很远，创新的源泉来自对事物本质的认识。无数优秀架构设计的思想来源都是基础的数据结构和算法，这本身就是算法的一个魅力所在。
+
+
+**练习**
+
+[多数元素](https://leetcode-cn.com/problems/majority-element/)
+
+
 
 
 ## 回溯
