@@ -51,18 +51,49 @@ permalink: /algo/thinking
 [多数元素](https://leetcode-cn.com/problems/majority-element/)
 
 
-
-
 ## 回溯
+
+回溯的本质是纯暴力穷举。
 
 面对岔路口时，随意选择一条路，当发现这条路走不通的时候，就回退到上一个岔路口，另选一种走法继续走。
 
-递归：回溯算法非常适合用递归来实现
-
 剪枝：在实现的过程中，剪枝操作是提高回溯效率的一种技巧。利用剪枝，我们并不需要穷举搜索所有的情况，从而提高搜索效率。
+
+### 算法框架
+
+解决一个回溯问题，实际上就是一个决策树的遍历过程。几个关键因素：
+- 路径：记录已做过的选择
+- 选择列表：当前可做的选择
+- 结束条件：到决策树底部，无法再做选择的条件
+
+``` python
+result = []
+def backtrack(路径, 选择列表):
+	if 满足结束条件:
+		result.add(路径)
+		return
+for 选择 in 选择列表:
+	做选择
+	backtrack(路径, 选择列表)
+    撤销选择
+```
+
+前序进行选择，后序撤销选择
 
 回溯的经典问题：
 
-深度优先搜索、八皇后、0-1 背包问题、图的着色、旅行商问题、数独、全排列、正则表达式匹配
+[子集](https://leetcode-cn.com/problems/subsets/)
+
+[组合](https://leetcode-cn.com/problems/combinations/)
+
+[全排列](https://leetcode-cn.com/problems/permutations/)
+
+[八皇后](https://leetcode-cn.com/problems/eight-queens-lcci/) 
+
+[解数独](https://leetcode-cn.com/problems/sudoku-solver/)
+
+[括号生成](https://leetcode-cn.com/problems/generate-parentheses/)
+
+[正则表达式匹配](https://leetcode-cn.com/problems/regular-expression-matching/)
 
 
