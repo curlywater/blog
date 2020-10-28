@@ -68,7 +68,7 @@ const front2EndSidebar = [
       {
         title: "React原理",
         children: [
-          "/前端技术/React/React原理/React与ReactDOM分别做了什么？.md",
+          "/前端技术/React/React原理/React与ReactDOM分别做了什么？.md"
         ],
       },
       {
